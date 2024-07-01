@@ -1,0 +1,31 @@
+#primary-menu ul li:last-child {
+    background-color: #1A459D;
+    color:white;
+    padding:5px 10px;
+}
+
+.hero-height {
+    height:80vh;
+    
+}
+
+.login {
+    max-width:500px;
+    margin:auto;
+}
+
+.post-section {
+    display: none; /* Hide all sections by default */
+}
+
+.post-section.active {
+    display: block; /* Show only the active section */
+}
+
+.post-section.active p {
+    font-weight:bold; /* Show only the active section */
+}
+
+.hidden {
+    display: none; /* Utility class for hiding elements */
+}
