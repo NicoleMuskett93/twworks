@@ -5,7 +5,7 @@
     <div>
         <div class="flex items-center h-48" style="background-image:url('https://garyb173.sg-host.com/wp-content/uploads/2024/06/pantiles-exterior-hero.jpg'); background-position: center">
         	<div class="flex flex-col">
-                <h1 class="text-white text-5xl font-semibold">Your jobs: </h1>
+                <h1 class="text-white text-5xl font-semibold">Add a job: <?php echo $current_user->user_login;?> </h1>
                 search
             </div>
         </div>
@@ -33,7 +33,7 @@
                         </div>
 
                         <div class="flex flex-row gap-10 items-center">
-                            <label class="text-xl" for="job_time">Supplemental Pay</label>
+                            <label class="text-xl" for="job_time">Full or Part time</label>
                             <input class="w-1/2 border border-black border-1 rounded p-2" type="text" id="job_time" name="job_time" placeholder="Full-time" required />
                         </div>
 
@@ -81,30 +81,6 @@
                             <?php wp_nonce_field('custom_job_form_action', 'custom_job_form_nonce'); ?>
                             <input id="publish_button" class="border border-1 border-black bg-gray-300 py-2 px-10 rounded" type="submit" value="Publish" />
                         </div>
-
-                        <!-- Editing options
-
-                         <div class="flex flex-row justify-start items-center gap-10">
-                            <div class="flex flex-row">
-                                <label class="text-xl" for="job_status"></label>
-                                    <div class="flex flex-row gap-2">
-                                        <input type="radio" id="published" name="job_published" value="published">
-                                        <label for="html">Published</label><br>
-                                    </div>
-                                    <div class="flex flex-row gap-2">
-                                        <input type="radio" id="draft" name="job_draft" value="draft">
-                                        <label for="css">Draft</label><br>
-                                    </div>
-                                    <div class="flex flex-row gap-2">
-                                        <input type="radio" id="archive" name="job_archive" value="archive">
-                                        <label for="javascript">Archive</label>
-                                    </div>
-                            </div>
-                            <div class="">
-                               remeber to put form nonce here
-                                <input class="border border-1 border-black bg-gray-300 py-2 px-10 rounded" type="submit" value="Update" />
-                            </div>
-                        </div> -->
    
                     </form>
 

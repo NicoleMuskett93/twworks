@@ -48,6 +48,7 @@
                             $job_start_date = get_post_meta(get_the_ID(), 'job_start_date', true);
                             $job_publish_date = get_post_meta(get_the_ID(), 'job_start_date', true);
                         ?>
+                        
                         <div class="job-post" data-status="<?php echo $status;?>">
                             <a href="<?php the_permalink(); ?>" class="cursor-pointer">
                                 <div class="flex flex-col gap-3">
@@ -65,12 +66,14 @@
                                         </div>
                                         <div class="flex flex-row justify-between">
                                             <p class="text-xl text-black"><?php echo $job_publish_date;?></p>
-                                            <a href="" class="text-xl text-black border border-black border-1 bg-gray-300 p-2 rounded">Edit</a>
+                                            <a href="<?php echo esc_url(home_url('/edit-jobs/?post_id=' . get_the_ID())); ?>" class="cursor-pointer text-xl text-black border border-black border-1 bg-gray-300 p-2 rounded">Edit</a>
+
                                         </div>
                                     </div>
                                 </div>
                             </a>
                         </div>
+                        
                     <?php
                         endwhile;
                         wp_reset_postdata(); // Restore original post data
@@ -110,5 +113,13 @@
 
 <?php get_footer(); ?>
 
+<!-- <script>
+    function displayPostsOnStatus (){
+        if($status === 'publish' || $status === 'draft' || $status === 'archive'){
+            document.getElementsByClassName('job-post').style.display = "block";
 
+        }
+    }
+    displayPostsOnStatus();
+</script> -->
 

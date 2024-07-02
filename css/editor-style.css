@@ -44,6 +44,10 @@
   }
 }
 
+.bottom-\[100px\] {
+  bottom: 100px
+}
+
 .m-8 {
   margin: 2rem
 }
@@ -160,6 +164,15 @@
   width: 100%
 }
 
+.w-auto {
+  width: auto
+}
+
+.w-fit {
+  width: -moz-fit-content;
+  width: fit-content
+}
+
 .max-w-5xl {
   max-width: 64rem
 }
@@ -169,14 +182,6 @@
 }
 
 .max-w-sm {
-  max-width: 24rem
-}
-
-.max-w-52 {
-  max-width: 13rem
-}
-
-.max-w-96 {
   max-width: 24rem
 }
 
@@ -368,6 +373,11 @@
 .py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem
 }
 
 .text-center {
