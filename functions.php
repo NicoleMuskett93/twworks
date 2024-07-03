@@ -203,11 +203,11 @@ function redirect_admin_from_my_jobs() {
 add_action('template_redirect', 'redirect_admin_from_my_jobs');
 
 
-// Handle form submission for 'jobs' custom post type
 add_action('init', function() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['custom_job_form_nonce']) && wp_verify_nonce($_POST['custom_job_form_nonce'], 'custom_job_form_action')) {
         
         // Sanitize and validate input data
+        $job_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0; // For updating post
         $job_title = sanitize_text_field($_POST['job_title']);
         $job_salary = sanitize_text_field($_POST['job_salary']);
         $job_description = sanitize_textarea_field($_POST['job_description']);
@@ -220,31 +220,41 @@ add_action('init', function() {
         $job_application_link = sanitize_text_field($_POST['job_application_link']);
         $job_publish_date = sanitize_text_field($_POST['job_publish_date']);
         $job_expiry_date = sanitize_text_field($_POST['job_expiry_date']);
-
         $job_status = sanitize_text_field($_POST['job_status']);
-        $post_status = 'publish';
-        if ($job_status === 'draft') {
-            $post_status = 'draft';
-        } elseif ($job_status === 'archive') {
-            $post_status = 'archive';
+
+        // Determine the post status and date
+        $post_status = $job_status; // Use job_status directly for simplicity
+        $post_date = current_time('mysql'); // Default to current time if no future date
+
+        // Check if publish date is set and it's a future date
+        if ($job_publish_date && strtotime($job_publish_date) > strtotime(current_time('mysql'))) {
+            $post_date = date('Y-m-d H:i:s', strtotime($job_publish_date));
+            $post_status = 'future'; // Schedule for future date
+        } else if ($job_publish_date && strtotime($job_publish_date) < strtotime(current_time('mysql'))) {
+            // For past dates, consider it as published immediately or handle according to your logic
+            $post_status = 'publish';
         }
 
-        // Determine if this is an update or a new post
-        if (!empty($_POST['job_id'])) {
-            $job_id = intval($_POST['job_id']);
+        // Common post data
+        $post_data = array(
+            'post_title'   => $job_title,
+            'post_content' => $job_description,
+            'post_status'  => $post_status,
+            'post_author'  => get_current_user_id(),
+            'post_type'    => 'jobs', // Assuming 'jobs' is your custom post type
+            'post_date'    => $post_date,
+        );
 
-            // Prepare updated job post data
-            $updated_job = array(
-                'ID'           => $job_id,
-                'post_title'   => $job_title,
-                'post_content' => $job_description,
-                'post_status'  => $post_status,
-            );
+        if ($job_id > 0) {
+            // Update existing job
+            $post_data['ID'] = $job_id;
+            wp_update_post($post_data);
+        } else {
+            // Create new job
+            $job_id = wp_insert_post($post_data);
+        }
 
-            // Update the post in the database
-            wp_update_post($updated_job);
-
-            // Update post meta
+        if ($job_id) {
             update_post_meta($job_id, 'job_salary', $job_salary);
             update_post_meta($job_id, 'job_supplemental_pay', $job_supplemental_pay);
             update_post_meta($job_id, 'job_time', $job_time);
@@ -256,43 +266,15 @@ add_action('init', function() {
             update_post_meta($job_id, 'job_publish_date', $job_publish_date);
             update_post_meta($job_id, 'job_expiry_date', $job_expiry_date);
 
-            wp_redirect(add_query_arg('status', 'updated', home_url('/my-jobs/')));
+            wp_redirect(add_query_arg('status', 'success', home_url('/my-jobs/')));
             exit;
-
         } else {
-            // Prepare new job post data
-            $new_job = array(
-                'post_title'   => $job_title,
-                'post_content' => $job_description,
-                'post_status'  => $post_status,
-                'post_author'  => get_current_user_id(),
-                'post_type'    => 'jobs', // Assuming 'jobs' is your custom post type
-            );
-
-            // Insert the post into the database
-            $job_id = wp_insert_post($new_job);
-
-            // Check if the post was created successfully
-            if ($job_id) {
-                update_post_meta($job_id, 'job_salary', $job_salary);
-                update_post_meta($job_id, 'job_supplemental_pay', $job_supplemental_pay);
-                update_post_meta($job_id, 'job_time', $job_time);
-                update_post_meta($job_id, 'job_shift', $job_shift);
-                update_post_meta($job_id, 'job_location', $job_location);
-                update_post_meta($job_id, 'job_start_date', $job_start_date);
-                update_post_meta($job_id, 'job_downloads', $job_downloads);
-                update_post_meta($job_id, 'job_application_link', $job_application_link);
-                update_post_meta($job_id, 'job_publish_date', $job_publish_date);
-                update_post_meta($job_id, 'job_expiry_date', $job_expiry_date);
-
-                wp_redirect(add_query_arg('status', 'success', home_url('/my-jobs/')));
-                exit;
-            } else {
-                wp_redirect(add_query_arg('status', 'error', home_url('/my-jobs/')));
-                exit;
-            }
+            wp_redirect(add_query_arg('status', 'error', home_url('/my-jobs/')));
+            exit;
         }
     }
 });
+
+
 
 

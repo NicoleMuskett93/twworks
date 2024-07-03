@@ -37,6 +37,7 @@
                         ?>
 
                         <form class="flex flex-col gap-3" id="job_form_<?php echo $job_post->ID; ?>" method="post">
+                            <input type="hidden" name="post_id" value="<?php echo esc_attr($job_post->ID); ?>" />
                             <div class="flex flex-row gap-10 items-center">
                                 <label class="text-xl" for="job_title">Job Title</label>
                                 <input class="w-1/2 border border-black border-1 rounded p-2" type="text" id="job_title" name="job_title" placeholder="Retail Store Manager" value="<?php echo esc_attr($job_post->post_title); ?>" required />

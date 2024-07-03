@@ -93,24 +93,25 @@
 <?php } ?>
 
 <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            let publishDateInput = document.getElementById("job_publish_date");
-            let submitButton = document.getElementById("publish_button");
+    document.addEventListener("DOMContentLoaded", function() {
+        let publishDateInput = document.getElementById("job_publish_date");
+        let submitButton = document.getElementById("publish_button");
 
-            function updateButtonValue() {
-                let publishDate = new Date(publishDateInput.value);
-                let now = new Date();
+        function updateButtonValue() {
+            let publishDate = new Date(publishDateInput.value);
+            let now = new Date();
 
-                // Check if the publish date is valid and in the future
-                if (!isNaN(publishDate) && publishDate >= now) {
-                    submitButton.value = "Schedule";
-                } else {
-                    submitButton.value = "Publish";
-                }
+            // Check if the publish date is valid and in the future
+            if (!isNaN(publishDate) && publishDate >= now) {
+                submitButton.value = "Schedule";
+
+            } else {
+                submitButton.value = "Publish";
             }
+        }
 
-            publishDateInput.addEventListener("input", updateButtonValue);
-            updateButtonValue();
-        });
-    </script>
+        publishDateInput.addEventListener("input", updateButtonValue);
+        updateButtonValue();
+    });
+</script>
 
