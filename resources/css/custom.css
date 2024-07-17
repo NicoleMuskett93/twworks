@@ -1,11 +1,12 @@
-#primary-menu ul li:last-child {
+/* #primary-menu ul li:last-child {
     background-color: #1A459D;
     color:white;
     padding:5px 10px;
-}
+} */
 
 .hero-height {
     height:80vh;
+   
     
 }
 
@@ -28,4 +29,24 @@
 
 .hidden {
     display: none; /* Utility class for hiding elements */
+}
+
+.title.active {
+    font-weight:bold;
+}
+
+
+form .input-group input::placeholder {
+   
+}
+
+#login-menu .sub-menu {
+    display:none;
+    position: absolute;
+    background-color: white;
+    padding:10px;
+}
+
+#login-menu:hover .sub-menu {
+    display:block;
 }

@@ -64,6 +64,19 @@
 					)
 				);
 				?>
+				<?php
+				wp_nav_menu(
+					array(
+						'container_id'    => 'login-menu',
+						'container_class' => '',
+						'menu_class'      => 'items-center lg:flex lg:-mx-4',
+						'theme_location'  => 'login',
+						'li_class'        => 'font-neuzeit-grotesk lg:mx-4',
+						'fallback_cb'     => false,
+					)
+				);
+				?>
+				
 			</div>
 		</div>
 	</header>

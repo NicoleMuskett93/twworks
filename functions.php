@@ -9,6 +9,7 @@ function tw_works_setup() {
 	register_nav_menus(
 		array(
 			'primary' => __( 'Primary Menu', 'tailpress' ),
+            'login' => __('Login Menu', 'tailpress'),
 		)
 	);
 
@@ -43,7 +44,9 @@ function tw_works_enqueue_scripts() {
 
 	wp_enqueue_style( 'tailpress', tw_works_asset( 'css/app.css' ), array(), $theme->get( 'Version' ) );
 	wp_enqueue_script( 'tailpress', tw_works_asset( 'js/app.js' ), array(), $theme->get( 'Version' ) );
+    wp_enqueue_script('pagination', tw_works_asset('js/pagination.js'), array('jquery'), $theme ->get('Version'),true);
 	wp_enqueue_style('login-css', site_url('/wp-admin/css/login.min.css'), array(), $theme->get( 'Version' ));
+
 }
 
 add_action( 'wp_enqueue_scripts', 'tw_works_enqueue_scripts' );
@@ -172,6 +175,7 @@ add_role('employer', 'Employer', array(
 add_action( 'init', 'wpdocs_custom_post_status' );
 
 
+
 //login redirect
 
 // Redirect based on user role
@@ -182,7 +186,11 @@ add_filter('login_redirect', function($redirect_to, $request, $user) {
         if (in_array('employer', $user->roles)) {
             // Redirect to the desired URL for employers
             return home_url('/my-jobs/');
-        } else {
+        } 
+        elseif(in_array('administrator', $user->roles)) {
+            return home_url('/jobs/');
+        }
+        else {
             // Redirect non-employers to the homepage or another URL
             return home_url('/access-denied/');
         }
@@ -201,6 +209,72 @@ function redirect_admin_from_my_jobs() {
     }
 }
 add_action('template_redirect', 'redirect_admin_from_my_jobs');
+
+function change_menu_name($items, $args) {
+    // Check if the menu is the one at the 'login' location
+    if ($args->theme_location == 'login') {
+        // Check if the user is logged in
+        if (is_user_logged_in()) {
+            $current_user = wp_get_current_user();
+            $display_name = $current_user->display_name;
+
+            // Check if the current user has the 'employer' role
+            if (in_array('employer', (array) $current_user->roles)) {
+                // Retrieve the menu items for 'login'
+                $menu_items = wp_get_nav_menu_items($args->menu);
+                $sub_menu = '';
+
+                // Generate submenu items
+                foreach ($menu_items as $menu_item) {
+                    // Assume submenu items are identified by a parent_id and you only need to retrieve them
+                    if ($menu_item->menu_item_parent) {
+                        $sub_menu .= '<li><a href="' . esc_url($menu_item->url) . '">' . esc_html($menu_item->title) . '</a></li>';
+                    }
+                }
+
+                // Append the submenu items to the display name link
+                $items = '<li><a href="#">' . esc_html($display_name) . '</a><ul class="sub-menu">' . $sub_menu . '</ul></li>';
+            } else {
+                // For other roles, just display the name
+                $items = '<li>' . esc_html($display_name) . '</li>';
+            }
+        }
+    }
+    return $items;
+}
+
+add_filter('wp_nav_menu_items', 'change_menu_name', 10, 2);
+
+
+function add_body_classes_based_on_user_role($classes) {
+    if (is_user_logged_in()) {
+        $current_user = wp_get_current_user();
+        $role = $current_user->roles[0];
+        $classes[] = 'role-' . $role;
+    }
+    return $classes;
+}
+add_filter('body_class', 'add_body_classes_based_on_user_role');
+
+
+//Connecting data php and js
+
+function localize_app_script() {
+    // Enqueue the app.js script
+    wp_enqueue_script('app', get_template_directory_uri() . '/js/app.js', array(), null, true);
+
+    // Get the current user information
+    $current_user = wp_get_current_user();
+
+    // Localize the script with current user information
+    wp_localize_script('app', 'currentUser', array(
+        'displayName' => $current_user->display_name,
+        'roles' => $current_user->roles
+    ));
+}
+add_action('wp_enqueue_scripts', 'localize_app_script');
+
+
 
 
 add_action('init', function() {
@@ -222,24 +296,13 @@ add_action('init', function() {
         $job_expiry_date = sanitize_text_field($_POST['job_expiry_date']);
         $job_status = sanitize_text_field($_POST['job_status']);
 
-        // Determine the post status and date
-        $post_status = $job_status; // Use job_status directly for simplicity
-        $post_date = current_time('mysql'); // Default to current time if no future date
-
-        // Check if publish date is set and it's a future date
-        if ($job_publish_date && strtotime($job_publish_date) > strtotime(current_time('mysql'))) {
-            $post_date = date('Y-m-d H:i:s', strtotime($job_publish_date));
-            $post_status = 'future'; // Schedule for future date
-        } else if ($job_publish_date && strtotime($job_publish_date) < strtotime(current_time('mysql'))) {
-            // For past dates, consider it as published immediately or handle according to your logic
-            $post_status = 'publish';
-        }
+        
 
         // Common post data
         $post_data = array(
             'post_title'   => $job_title,
             'post_content' => $job_description,
-            'post_status'  => $post_status,
+            'post_status'  => $job_status,
             'post_author'  => get_current_user_id(),
             'post_type'    => 'jobs', // Assuming 'jobs' is your custom post type
             'post_date'    => $post_date,
@@ -275,6 +338,48 @@ add_action('init', function() {
     }
 });
 
+function filter_jobs_ajax_handler() {
+    // Check if this is an AJAX request
+    if ( isset( $_POST['action'] ) && $_POST['action'] == 'filter_jobs' ) {
+        
+        // Retrieve filter parameters from AJAX request
+        $full_or_part_time = isset( $_POST['full_or_part_time'] ) ? sanitize_text_field( $_POST['full_or_part_time'] ) : '';
 
+        // Set up $args for WP_Query
+        $args = array(
+            'post_type' => 'jobs',
+            'posts_per_page' => -1,
+        );
 
+        // Add custom fields to $args if they are set
+        if ( $full_or_part_time ) {
+            $args['meta_query'] = array(
+                array(
+                    'key' => 'job_time', // Replace with your actual meta field key
+                    'value' => $full_or_part_time,
+                    'compare' => '='
+                )
+            );
+        }
 
+        // Perform WP_Query
+        $posts = new WP_Query( $args );
+
+        // Check if there are posts
+        if ( $posts->have_posts() ) {
+            while ( $posts->have_posts() ) {
+                $posts->the_post();
+                // Output your post content as needed
+                get_template_part( 'template-parts/content', 'jobs' );
+            }
+            wp_reset_postdata(); // Reset post data
+        } else {
+            echo 'No jobs found.';
+        }
+
+        // Always die() after outputting the data in AJAX
+        wp_die();
+    }
+}
+add_action( 'wp_ajax_filter_jobs', 'filter_jobs_ajax_handler' );
+add_action( 'wp_ajax_nopriv_filter_jobs', 'filter_jobs_ajax_handler' );

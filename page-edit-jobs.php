@@ -45,7 +45,7 @@
 
                             <div class="flex flex-row gap-10 items-center">
                                 <label class="text-xl" for="job_salary">Salary</label>
-                                <input class="w-1/2 border border-black border-1 rounded p-2" type="text" id="job_salary" name="job_salary" placeholder="£26,000 a year - Full-time" value="<?php echo esc_attr($job_salary); ?>" required />
+                                <input class="w-1/2 border border-black border-1 rounded p-2" type="number" id="job_salary" name="job_salary" placeholder="£26,000 a year - Full-time" value="<?php echo esc_attr($job_salary); ?>" required />
                             </div>
 
                             <div class="flex flex-row gap-10 items-center">
@@ -54,8 +54,11 @@
                             </div>
 
                             <div class="flex flex-row gap-10 items-center">
-                                <label class="text-xl" for="job_time">Job Time</label>
-                                <input class="w-1/2 border border-black border-1 rounded p-2" type="text" id="job_time" name="job_time" placeholder="Full-time" value="<?php echo esc_attr($job_time); ?>" required />
+                                <label class="text-xl" for="job_time">Full or Part time</label>
+                                <select class="w-1/2 border border-black border-1 rounded p-2" id="job_time" name="job_time" required>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                </select>
                             </div>
 
                             <div class="flex flex-row gap-10 items-center">

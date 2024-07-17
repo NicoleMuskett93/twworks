@@ -19,12 +19,12 @@
                     <form class="flex flex-col gap-3" id="job_form" action="" method="post">
                         <div class="flex flex-row gap-10 items-center">
                             <label class="text-xl" for="job_title">Job Title</label>
-                            <input class="w-1/2 border border-black border-1 rounded p-2" type="text" id="job_title" name="job_title" placeholder="Retail Store Manager" />
+                            <input class="w-1/2 border border-black border-1 rounded p-2" type="text" id="job_title" name="job_title" placeholder="Retail Store Manager" required />
                         </div>
 
                         <div class="flex flex-row gap-10 items-center">
                             <label class="text-xl" for="job_salary">Salary</label>
-                            <input class="w-1/2 border border-black border-1 rounded p-2" type="text" id="job_salary" name="job_salary" placeholder="£26,000 a year - Full-time" required />
+                            <input class="w-1/2 border border-black border-1 rounded p-2" type="number" id="job_salary" name="job_salary" placeholder="£26,000 a year" required />
                         </div>
 
                         <div class="flex flex-row gap-10 items-center">
@@ -34,7 +34,10 @@
 
                         <div class="flex flex-row gap-10 items-center">
                             <label class="text-xl" for="job_time">Full or Part time</label>
-                            <input class="w-1/2 border border-black border-1 rounded p-2" type="text" id="job_time" name="job_time" placeholder="Full-time" required />
+                            <select class="w-1/2 border border-black border-1 rounded p-2" id="job_time" name="job_time" required>
+                                <option value="Full-time">Full-time</option>
+                                <option value="Part-time">Part-time</option>
+                            </select>
                         </div>
 
                         <div class="flex flex-row gap-10 items-center">
@@ -114,4 +117,3 @@
         updateButtonValue();
     });
 </script>
-
