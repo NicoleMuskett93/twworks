@@ -172,6 +172,7 @@ add_role('employer', 'Employer', array(
 	'publish_posts' => true,
 	'manage_categories' => false,
 	'delete_others_posts' => false,
+    'rich_editing' => true,
 
 ));
 
@@ -192,7 +193,25 @@ add_role('employer', 'Employer', array(
 }
 add_action( 'init', 'wpdocs_custom_post_status' );
 
+/**
+ * Add custom option page - only admin can access
+ */
 
+if( function_exists('acf_add_options_page') ) {
+        
+        $option_page = acf_add_options_page(array(
+            'page_title'    => 'Jobs Banner',
+            'menu_title'    => 'Jobs Banner',
+            'menu_slug'     => 'jobs-banner-settings',
+            'capability'    => 'administrator',
+            'redirect'      => false
+        ));
+    }
+
+//format salary
+    function format_salary($job_salary) {
+        return number_format($job_salary);
+    }
 
 //login redirect
 

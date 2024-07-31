@@ -102,7 +102,7 @@
 									'container_class' => 'hidden lg:block',
 									'menu_class'      => 'items-center lg:flex',
 									'theme_location'  => 'secondary',
-									'li_class'        => 'sec-menu text-center p-6 font-neuzeit-grotesk ',
+									'li_class'        => 'sec-menu text-center font-neuzeit-grotesk ',
 									'fallback_cb'     => false,
 								)
 						);

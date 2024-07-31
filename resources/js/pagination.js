@@ -18,7 +18,7 @@ jQuery(document).ready(function ($) {
       },
       success: function (response) {
         if (response.success) {
-          var newPosts = $(response.data.posts).filter('.job-post').length;
+          var newPosts = $(response.data.posts).filter(".job-post").length;
 
           // Append new posts to the job listing container
           $("#job-listing-container").append(response.data.posts);
@@ -29,9 +29,14 @@ jQuery(document).ready(function ($) {
           button.text("Load More Jobs");
 
           // Hide the button if fewer than 5 posts were returned or if the next page exceeds max pages
-          if (response.data.posts_returned < 5 || nextPage > response.data.max_pages) {
+          if (
+            response.data.posts_returned < 5 ||
+            nextPage > response.data.max_pages
+          ) {
             button.hide();
-            console.log("Fewer than 5 posts returned or no more pages available, hiding button");
+            console.log(
+              "Fewer than 5 posts returned or no more pages available, hiding button"
+            );
           }
         } else {
           button.hide(); // Hide the button if no response

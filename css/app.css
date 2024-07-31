@@ -999,10 +999,6 @@ video {
   padding: 1.25rem;
 }
 
-.p-6 {
-  padding: 1.5rem;
-}
-
 .p-8 {
   padding: 2rem;
 }
@@ -1281,6 +1277,9 @@ video {
 
 #secondary-menu ul li {
   width:175px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #secondary-menu ul li a {
@@ -1289,11 +1288,13 @@ video {
 }
 
 #secondary-menu ul:first-child .sec-menu a{
-  padding:20px 30px;
+  padding:20px 40px;
+  font-size:15px;
 }
 
 #secondary-menu ul:nth-child(2) .sec-menu a{
   padding:0;
+  font-size:13px;
 }
 
 /* menu colors */

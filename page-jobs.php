@@ -3,11 +3,13 @@
 // $job_time_filter = isset($_GET['full_or_part_time']) ? $_GET['full_or_part_time'] : '';
 $search_query = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
 
+$banner_image = get_field('banner_image', 'option');
+
 ?>
 
 <div class="<?php echo get_post_type(); ?>">
 
-<div class="flex justify-center items-center h-60 mt-10" style="background-image:url('https://garyb173.sg-host.com/wp-content/uploads/2024/06/pantiles-exterior-hero.jpg'); background-position: center">
+<div class="flex justify-center items-center h-60 mt-10" style="background-image:url('<?php echo $banner_image['url'];?>'); background-position: center">
     <h1 class="text-white text-center text-5xl font-semibold max-w-xl">Find your pefect job in Tunbridge Wells </h1>
 </div>
 <div class="flex flex-col lg:flex-row">

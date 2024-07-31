@@ -105,7 +105,7 @@ if (is_user_logged_in()) {
                                         <p class="text-xl text-black"><?php echo esc_html($current_user->company_name); ?></p>
                                     </div>
                                     <div class="flex flex-row gap-1">
-                                        <p class="text-xl text-black">£<?php echo esc_html($job_salary); ?></p>
+                                        <p class="text-xl text-black">£<?php echo format_salary($job_salary); ?></p>
                                         <p class="text-xl text-black"> - <?php echo esc_html($job_shift); ?></p>
                                     </div>
                                     <div class="flex flex-row justify-between">

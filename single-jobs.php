@@ -8,12 +8,6 @@ $job_downloads_one = get_post_meta(get_the_ID(), 'job_downloads_one', true);
 $job_downloads_two = get_post_meta(get_the_ID(), 'job_downloads_two', true);
 
 
-
-
-
-function format_salary($salary) {
-    return number_format($salary);
-}
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>

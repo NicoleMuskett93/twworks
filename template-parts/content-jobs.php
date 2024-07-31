@@ -10,6 +10,7 @@ $job_start_date = get_post_meta(get_the_ID(), 'job_start_date', true);
 $company_logo = get_field('company_logo', 'user_' . get_the_author_meta('ID'));
 $company_name = get_field('company_name', 'user_'. get_the_author_meta('ID'));
 
+
 ?>
 
 
@@ -26,7 +27,7 @@ $company_name = get_field('company_name', 'user_'. get_the_author_meta('ID'));
             <p class="text-xl text-black"><?php echo $company_name;?></p>
         </div>
         <div class="flex flex-row gap-1">
-            <p class="text-xl text-black">£<?php echo $job_salary; ?></p>
+        <p class="text-lg">£<?php echo format_salary($job_salary)?></p>
             <p class="text-xl text-black"> - <?php echo $job_shift;?></p>
         </div>
         <div class="flex flex-row justify-between">

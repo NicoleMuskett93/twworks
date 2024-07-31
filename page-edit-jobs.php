@@ -103,6 +103,7 @@ $banner_image = get_field('banner_image', 'option');
                                             'drag_drop_upload' => true,
                                             'tinymce' => array(
                                                 'toolbar1' => 'bold italic underline | bullist numlist | link unlink | undo redo',
+                                                'block_formats' => 'Paragraph=p; Header 1=h1; Header 2=h2; Header 3=h3',
                                             ),
                                         )
                                     ); 
