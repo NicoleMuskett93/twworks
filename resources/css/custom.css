@@ -1,18 +1,115 @@
-/* #primary-menu ul li:last-child {
-    background-color: #1A459D;
-    color:white;
-    padding:5px 10px;
-} */
+#salary_slider .noUi-connect {
+    background-color: #3B82F6;
+}
+
+#salary_slider .noUi-tooltip {
+    display: none;
+}
+
 
 .hero-height {
-    height:80vh;
-   
-    
+    height:80vh;  
 }
 
 .login {
     max-width:500px;
     margin:auto;
+}
+
+.login .login-submit input {
+    border: #e5e7eb solid 1px;
+    padding: 2px 4px;
+    cursor: pointer;
+}
+.login .login-submit input:hover {
+    background-color:#1A459D;
+    color: white;
+    
+}
+
+#secondary-menu ul {
+    position: relative;
+}
+
+#secondary-menu ul li {
+   width:175px;
+}
+
+#secondary-menu ul li a {
+    color:white;
+    font-weight: 500;
+
+}
+
+#secondary-menu ul:first-child .sec-menu a{
+    padding:20px 30px;
+}
+
+#secondary-menu ul:nth-child(2) .sec-menu a{
+    padding:0;
+}
+/* menu colors */
+#secondary-menu ul li:first-child {
+    background-color: #2EB000;
+}
+
+#secondary-menu ul li .sub-menu {
+    display:none;
+}
+
+#secondary-menu #menu-secondary-menu .menu-item {
+    opacity: 0.7;
+}
+
+#secondary-menu #menu-secondary-menu .menu-item-active {
+    opacity: 1;
+}
+
+#secondary-menu ul .menu-item-active .sub-menu {
+    display:flex;
+    position:absolute;
+    top:100%;
+    right:0;
+    width:100vw;
+    background-color: inherit;
+    justify-content: flex-end;
+    padding:2px;
+}
+
+#secondary-menu ul li .sub-menu li {
+    padding: 10px;
+    opacity: 1!important;
+}
+
+#secondary-menu ul li:first-child .sub-menu li{
+    background-color:  #2EB000;
+}
+
+#secondary-menu ul li:nth-child(2) {
+    background-color: #D31F1F;
+}
+
+#secondary-menu ul li:nth-child(3) {
+    background-color: #EC8001;
+}
+
+#secondary-menu ul li:nth-child(4) {
+    background-color: #E500C0;
+}
+
+#secondary-menu ul .menu-item-active .sub-menu li{
+    position: relative;
+}
+
+#secondary-menu ul .menu-item-active .sub-menu li .sub-menu {
+    display:none;
+}
+
+#secondary-menu ul .menu-item-active .sub-menu li:hover .sub-menu {
+    display:flex;
+    position: absolute;
+    width: 175px;
+    left:0;
 }
 
 .post-section {
@@ -35,18 +132,81 @@
     font-weight:bold;
 }
 
-
-form .input-group input::placeholder {
-   
+#login-menu ul li {
+    width:100%;
+    margin-right:25px;
 }
 
 #login-menu .sub-menu {
     display:none;
     position: absolute;
     background-color: white;
-    padding:10px;
+    padding:10px;    
 }
 
 #login-menu:hover .sub-menu {
-    display:block;
+    display:none;
 }
+
+.role-employer #login-menu:hover .sub-menu {
+    display:block;
+    z-index: 999;
+}
+
+#salary_slide .noUi-connect {
+    background: #3B82F6;
+}
+#search-form {
+    position: relative;
+}
+  
+#search-input {
+    padding-left: 2.5rem; /* Space for the icon */
+    padding-right: 1rem; /* Optional: Adjust for additional space if needed */
+}
+  
+#search-submit {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem; /* Adjust as needed to align the icon correctly */
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10; /* Ensure the button is above the input field */
+}
+  
+#search-submit i {
+    font-size: 1.25rem; /* Adjust size as needed */
+    color: black; /* Adjust color as needed */   
+}
+  
+
+.nav a {
+    color:black;
+}
+
+.news-intro {
+    text-align: center;
+    font-size: 1.1em;
+    max-width: 945px;
+    margin:1em auto;
+    
+    
+}
+
+/* Add any other styles you need */
+
+
+.swiper .swiper-slide {
+    opacity: 0 !important;
+  }
+  
+  .swiper .swiper-slide-active {
+    opacity: 1 !important;
+}
+
+.swiper-pagination{
+    position: relative!important;
+}
+

@@ -1,18 +1,13 @@
- <?php get_header();
-
- $banner_image = get_field('banner_image', 'option');
- 
- 
+<? get_header(); 
 
 // $job_time_filter = isset($_GET['full_or_part_time']) ? $_GET['full_or_part_time'] : '';
 $search_query = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
-
 
 ?>
 
 <div class="<?php echo get_post_type(); ?>">
 
-<div class="flex justify-center items-center h-48" style="background-image:url('<?php echo $banner_image['url'];?>'); background-position: center">
+<div class="flex justify-center items-center h-60 mt-10" style="background-image:url('https://garyb173.sg-host.com/wp-content/uploads/2024/06/pantiles-exterior-hero.jpg'); background-position: center">
     <h1 class="text-white text-center text-5xl font-semibold max-w-xl">Find your pefect job in Tunbridge Wells </h1>
 </div>
 <div class="flex flex-col lg:flex-row">
@@ -37,7 +32,7 @@ $search_query = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
                     <div class="text-lg">
                         <span id="salary_value">£20000 - £50000</span>
                     </div>
-                    <div class="text-lg"><span>£</span><span id="salary_value">20000 - 40000</span></div> -->
+                    <!-- <div class="text-lg"><span>£</span><span id="salary_value">20000 - 40000</span></div> -->
                 </div>
 
                     <div class="flex flex-row items-center justify-between">
@@ -83,10 +78,9 @@ $search_query = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
 
                     if ($query->have_posts()) :
                         $max_pages = $query->max_num_pages;
-                        $total_posts = $query->found_posts;
                         while ($query->have_posts()) :
                             $query->the_post();
-
+                           
                         
                        
                             get_template_part( 'template-parts/content', get_post_type() ); 
@@ -100,7 +94,7 @@ $search_query = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
             </div>
             <!-- Load More Jobs Button -->
              <div class="flex justify-center">
-                <button id="load-more-jobs" class="mt-4 bg-blue-500 text-white p-2 rounded" data-page="2" data-max-pages="<?php echo $max_pages;?>"">Load More Jobs</button>
+                <button id="load-more-jobs" class="mt-4 bg-blue-500 text-white p-2 rounded" data-page="2" data-max-pages="<?php echo $max_pages;?>">Load More Jobs</button>
                 <div id="loading" style="display:none;">Loading...</div>
             </div>
         </div>

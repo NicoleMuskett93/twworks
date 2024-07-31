@@ -13,11 +13,11 @@ $company_name = get_field('company_name', 'user_'. get_the_author_meta('ID'));
 ?>
 
 
-<div class="flex flex-row">
+<div class="flex flex-row job-post">
     <div class="flex flex-col gap-3 w-1/6">
         <?php if ($company_logo) :
             ?>
-        <img class="h-full w-full rounded-md object-cover" src="<?php echo esc_url($company_logo); ?>" alt="<?php echo esc_attr(get_the_author_meta('display_name', get_the_author_meta('ID'))); ?>">
+        <img class="h-full w-full rounded-md object-contain bg-white p-3" src="<?php echo esc_url($company_logo); ?>" alt="<?php echo esc_attr(get_the_author_meta('display_name', get_the_author_meta('ID'))); ?>">
         <?php endif; ?>
         </div>
         <div class="flex flex-col bg-white w-5/6 p-3">

@@ -27,7 +27,7 @@ module.exports = {
       ),
 
       fontFamily: {
-        niveau: ["neuzeit-grotesk", "sans-serif"],
+        neuzeit: ["neuzeit-grotesk", "sans-serif"],
       },
     },
     screens: {

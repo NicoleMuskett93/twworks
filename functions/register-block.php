@@ -28,6 +28,18 @@ function twworks_register_blocks()
 			'keywords'			=> array('twworks, main-content')
 		));
 
+		// Testimonials block
+		acf_register_block(array(
+			'name'				=> 'twworks-testimonials',
+			'title'				=> __('TWWorks Testimonials'),
+			'description'		=> __('Create a Testimonials block for the TWWorks website'),
+			'render_template'	=> 'template-parts/blocks/testimonials.php',
+			'category'			=> 'twworks_category',
+			'icon'				=> 'slides',
+			'keywords'			=> array('twworks, testimonial')
+		));
+
+
 		
 	}
 }

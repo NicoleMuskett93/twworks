@@ -5,11 +5,10 @@
 	<meta name="viewport" content="width=device-width">
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
-
 	<?php wp_head(); ?>
 </head>
 
-<body <?php body_class( 'bg-white text-gray-900 antialiased' ); ?>>
+<body <?php body_class( 'font-neuzeit bg-white text-gray-900 antialiased' ); ?>>
 
 <?php do_action( 'tw_works_site_before' ); ?>
 
@@ -19,9 +18,9 @@
 
 	<header>
 
-		<div class="mx-auto container">
-			<div class="lg:flex lg:justify-between lg:items-center border-b py-6">
-				<div class="flex justify-between items-center">
+		<div class="nav">
+			<div class="lg:flex items-center border-b bg-blue-50">
+				<div class="flex flex-row justify-between items-center">
 					<div class="w-48">
 						<?php if ( has_custom_logo() ) { ?>
                             <?php the_custom_logo(); ?>
@@ -38,7 +37,7 @@
 					</div>
 
 					<div class="lg:hidden">
-						<a href="#" aria-label="Toggle navigation" id="primary-menu-toggle">
+						<a href="#" aria-label="Toggle navigation" id="mobile-menu-toggle">
 							<svg viewBox="0 0 20 20" class="inline-block w-6 h-6" version="1.1"
 								 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 								<g stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd">
@@ -52,31 +51,65 @@
 					</div>
 				</div>
 
-				<?php
-				wp_nav_menu(
+				<div>
+					
+				<?php wp_nav_menu(
 					array(
-						'container_id'    => 'primary-menu',
-						'container_class' => 'hidden bg-gray-100 mt-4 p-4 lg:mt-0 lg:p-0 lg:bg-transparent lg:block',
-						'menu_class'      => 'items-center lg:flex lg:-mx-4',
-						'theme_location'  => 'primary',
-						'li_class'        => 'font-neuzeit-grotesk lg:mx-4',
+						'container_id'    => 'mobile',
+						'container_class' => 'hidden bg-gray-100 p-4',
+						'menu_class'      => 'items-center lg:flex lg:-mx-4 gap-10',
+						'theme_location'  => 'mobile',
+						'li_class'        => 'lg:mx-4',
 						'fallback_cb'     => false,
 					)
 				);
 				?>
-				<?php
-				wp_nav_menu(
-					array(
-						'container_id'    => 'login-menu',
-						'container_class' => '',
-						'menu_class'      => 'items-center lg:flex lg:-mx-4',
-						'theme_location'  => 'login',
-						'li_class'        => 'font-neuzeit-grotesk lg:mx-4',
-						'fallback_cb'     => false,
-					)
-				);
-				?>
-				
+				</div>
+
+				<div class="flex flex-col w-full">
+
+					<div class="flex flex-row justify-between bg-blue-50 px-5 py-2">
+
+					<?php
+					wp_nav_menu(
+						array(
+							'container_id'    => 'primary-menu',
+							'container_class' => 'hidden bg-gray-100 mt-4 p-4 lg:mt-0 lg:p-0 lg:bg-transparent lg:block',
+							'menu_class'      => 'items-center lg:flex lg:-mx-4 gap-10',
+							'theme_location'  => 'primary',
+							'li_class'        => 'lg:mx-4',
+							'fallback_cb'     => false,
+						)
+					);
+					?>
+					<?php
+					wp_nav_menu(
+						array(
+							'container_id'    => 'login-menu',
+							'container_class' => 'hidden lg:block',
+							'menu_class'      => 'items-center lg:flex lg:-mx-4',
+							'theme_location'  => 'login',
+							'li_class'        => 'lg:mx-4',
+							'fallback_cb'     => false,
+						)
+					);
+					?>
+					</div>
+					<div class="flex flex-row justify-end bg-white">
+						<?php wp_nav_menu(
+								array(
+									'container_id'    => 'secondary-menu',
+									'container_class' => 'hidden lg:block',
+									'menu_class'      => 'items-center lg:flex',
+									'theme_location'  => 'secondary',
+									'li_class'        => 'sec-menu text-center p-6 font-neuzeit-grotesk ',
+									'fallback_cb'     => false,
+								)
+						);
+						?>
+					</div>
+
+				</div>
 			</div>
 		</div>
 	</header>

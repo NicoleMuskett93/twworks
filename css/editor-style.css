@@ -52,12 +52,29 @@
   position: relative
 }
 
+.left-3 {
+  left: 0.75rem
+}
+
+.top-1\/2 {
+  top: 50%
+}
+
 .z-10 {
   z-index: 10
 }
 
 .m-8 {
   margin: 2rem
+}
+
+.m-auto {
+  margin: auto
+}
+
+.mx-5 {
+  margin-left: 1.25rem;
+  margin-right: 1.25rem
 }
 
 .mx-auto {
@@ -70,9 +87,19 @@
   margin-bottom: 2.5rem
 }
 
+.my-20 {
+  margin-top: 5rem;
+  margin-bottom: 5rem
+}
+
 .my-3 {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem
+}
+
+.my-5 {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem
 }
 
 .my-8 {
@@ -88,16 +115,20 @@
   margin-bottom: 3rem
 }
 
-.mb-3 {
-  margin-bottom: 0.75rem
-}
-
 .mb-4 {
   margin-bottom: 1rem
 }
 
+.mb-5 {
+  margin-bottom: 1.25rem
+}
+
 .mb-8 {
   margin-bottom: 2rem
+}
+
+.mt-10 {
+  margin-top: 2.5rem
 }
 
 .mt-4 {
@@ -132,8 +163,16 @@
   height: 12rem
 }
 
+.h-56 {
+  height: 14rem
+}
+
 .h-6 {
   height: 1.5rem
+}
+
+.h-60 {
+  height: 15rem
 }
 
 .h-full {
@@ -197,6 +236,10 @@
   max-width: 1440px
 }
 
+.max-w-screen-lg {
+  max-width: 960px
+}
+
 .max-w-sm {
   max-width: 24rem
 }
@@ -209,12 +252,25 @@
   flex-grow: 1
 }
 
+.-translate-y-1\/2 {
+  --tw-translate-y: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+}
+
+.transform {
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+}
+
 .cursor-pointer {
   cursor: pointer
 }
 
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr))
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr))
 }
 
 .flex-row {
@@ -231,6 +287,10 @@
 
 .justify-start {
   justify-content: flex-start
+}
+
+.justify-end {
+  justify-content: flex-end
 }
 
 .justify-center {
@@ -265,6 +325,10 @@
   gap: 1.25rem
 }
 
+.gap-8 {
+  gap: 2rem
+}
+
 .divide-y > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
@@ -288,12 +352,12 @@
   border-width: 1px
 }
 
-.border-0 {
-  border-width: 0px
-}
-
 .border-b {
   border-bottom-width: 1px
+}
+
+.border-none {
+  border-style: none
 }
 
 .border-black {
@@ -346,9 +410,18 @@
   background-color: rgb(26 69 157 / var(--tw-bg-opacity))
 }
 
+.bg-transparent {
+  background-color: transparent
+}
+
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity))
+}
+
+.object-contain {
+  -o-object-fit: contain;
+     object-fit: contain
 }
 
 .object-cover {
@@ -380,8 +453,8 @@
   padding: 1.25rem
 }
 
-.p-7 {
-  padding: 1.75rem
+.p-6 {
+  padding: 1.5rem
 }
 
 .p-8 {
@@ -408,6 +481,11 @@
   padding-right: 1rem
 }
 
+.px-5 {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem
+}
+
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem
@@ -428,9 +506,8 @@
   padding-bottom: 1rem
 }
 
-.py-6 {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem
+.pl-10 {
+  padding-left: 2.5rem
 }
 
 .text-center {
@@ -439,6 +516,10 @@
 
 .align-top {
   vertical-align: top
+}
+
+.font-neuzeit {
+  font-family: neuzeit-grotesk, sans-serif
 }
 
 .text-2xl {
@@ -495,6 +576,10 @@
   text-transform: uppercase
 }
 
+.italic {
+  font-style: italic
+}
+
 .leading-tight {
   line-height: 1.25
 }
@@ -502,6 +587,11 @@
 .text-black {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity))
+}
+
+.text-blue-500 {
+  --tw-text-opacity: 1;
+  color: rgb(59 130 246 / var(--tw-text-opacity))
 }
 
 .text-gray-500 {
@@ -537,6 +627,10 @@
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity))
+}
+
+.underline {
+  text-decoration-line: underline
 }
 
 .antialiased {
@@ -674,12 +768,16 @@ body {
     display: none
   }
 
-  .lg\:items-center {
-    align-items: center
+  .lg\:w-1\/3 {
+    width: 33.333333%
   }
 
-  .lg\:justify-between {
-    justify-content: space-between
+  .lg\:w-2\/3 {
+    width: 66.666667%
+  }
+
+  .lg\:flex-row {
+    flex-direction: row
   }
 
   .lg\:bg-transparent {
