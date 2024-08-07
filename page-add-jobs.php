@@ -1,6 +1,7 @@
 <?php get_header();
 
 $banner_image = get_field('banner_image', 'option');
+$company_name = $current_user->company_name;?>
 
 ?>
 
@@ -20,6 +21,7 @@ $banner_image = get_field('banner_image', 'option');
 				<div class="flex flex-col gap-3">
 					<h2 class="font-bold text-2xl"><?php echo $current_user->company_name;?></h2>
                     <form class="flex flex-col gap-3" id="job_form" action="" method="post" enctype="multipart/form-data">
+                        <input type="hidden" id="job_company_name" name="job_company_name" value="<?php echo $company_name;?>"/>
                         <div class="flex flex-row gap-10 items-center">
                             <label class="text-xl" for="job_title">Job Title</label>
                             <input class="w-1/2 border border-black border-1 rounded p-2" type="text" id="job_title" name="job_title" placeholder="Retail Store Manager" required />

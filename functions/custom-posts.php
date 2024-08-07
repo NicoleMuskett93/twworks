@@ -42,6 +42,7 @@ function twworks_create_custom_post_type() {
 		'publicly_queryable'  => true,
 		'capability_type'     => 'post',
 		'show_in_rest' => true,
+		'rewrite' => array('slug' => 'tw-jobs','with_front' => false),
 
 		'taxonomies' => array( 'jobs-category' )
 	);

@@ -3,6 +3,8 @@ import "./filter.js";
 import "./pagination.js";
 import "./slider.js";
 import "./carousel.js";
+import "./job-listing.js";
+import "./update-profile.js";
 
 (() => {
   // Wait for the window to load before executing JavaScript
@@ -49,6 +51,17 @@ document.addEventListener("DOMContentLoaded", function () {
       if (event.key === "Enter") {
         event.preventDefault();
       }
+    });
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const logoutMenuItem = document.querySelector(".logout-menu-item");
+
+  if (logoutMenuItem) {
+    logoutMenuItem.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent the default link behavior
+      window.location.href = logoutUrl;
     });
   }
 });

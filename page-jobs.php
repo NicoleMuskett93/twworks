@@ -37,9 +37,20 @@ $banner_image = get_field('banner_image', 'option');
                     <!-- <div class="text-lg"><span>£</span><span id="salary_value">20000 - 40000</span></div> -->
                 </div>
 
+                <div class="flex flex-row items-center justify-between">
+                        <label class="text-lg font-semibold" for="when_published">Published</label>
+                        <select class="w-1/2 border rounded p-2" id="when_published" name="when_published">
+                            <option value="">All</option>
+                            <option value="today">Last 24 hours</option>
+                            <option value="this-week">This Week</option>
+                            <option value="this-month">This Month</option>
+                        </select>
+                    </div>
+
+
                     <div class="flex flex-row items-center justify-between">
                         <label class="text-lg font-semibold" for="full_or_part_time">Full / Part time</label>
-                        <select class="w-1/2 border  rounded p-2" id="full_or_part_time" name="full_or_part_time" placeholder="Select Time">
+                        <select class="w-1/2 border  rounded p-2" id="full_or_part_time" name="full_or_part_time">
                             <option value="">All</option>
                             <option value="full-time">Full-time</option>
                             <option value="part-time">Part-time</option>
@@ -55,9 +66,10 @@ $banner_image = get_field('banner_image', 'option');
                             <option value="Remote">Remote</option>
                         </select>
                     </div>
-
-
-                    <button type="submit" class="mt-4 bg-blue-500 text-white p-2 rounded">Filter Jobs</button>
+                    <!-- <button type="submit" class="mt-4 bg-blue-500 text-white p-2 rounded">Filter Jobs</button> -->
+                     <div class="flex justify-center">
+                        <button id="filter-reset" class="mt-4 border border-1 border-black font-medium text-black p-2 rounded w-32" type="reset">Clear Filters </button>
+                     </div>
                 </form>
             </div>
 
@@ -70,9 +82,13 @@ $banner_image = get_field('banner_image', 'option');
                     // Define your query arguments
                     $args = array(
                         'post_type' => 'jobs', // Custom post type slug
-                        'posts_per_page' => 5, 
+                        'posts_per_page' => 10, 
                         'post_status' => 'publish' , // Only show published posts
                         's' => $search_query, // Search query
+                        // 'meta_key' => 'job_publish_date',
+                        // 'orderby' => 'meta_value',
+                        // 'order' => 'DESC',
+                        // 'meta_type' => 'DATE',
                     );
 
                     // Perform the query
@@ -95,10 +111,12 @@ $banner_image = get_field('banner_image', 'option');
                     ?>
             </div>
             <!-- Load More Jobs Button -->
+             <?php if($max_pages > 1) : ?>
              <div class="flex justify-center">
-                <button id="load-more-jobs" class="mt-4 bg-blue-500 text-white p-2 rounded" data-page="2" data-max-pages="<?php echo $max_pages;?>">Load More Jobs</button>
+                <button id="load-more-jobs" class="mt-4 bg-blue-500 text-white p-2 rounded" data-page="1" data-max-pages="<?php echo $max_pages;?>">Load More Jobs</button>
                 <div id="loading" style="display:none;">Loading...</div>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

@@ -8,6 +8,8 @@ $job_downloads_one = get_post_meta(get_the_ID(), 'job_downloads_one', true);
 $job_downloads_two = get_post_meta(get_the_ID(), 'job_downloads_two', true);
 
 
+$publish_timestamp = get_the_time('U');
+$time_diff = human_time_diff($publish_timestamp);
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -25,7 +27,7 @@ $job_downloads_two = get_post_meta(get_the_ID(), 'job_downloads_two', true);
                     <div class="flex flex-row gap-5 justify-between">
                         <div class="flex flex-col gap-1">
                             <h2 class="text-2xl text-black font-bold"><?php the_title(); ?></h2>
-                            <p class="text-lg text-black font-bold"><?php echo $company_name;?></p>
+                            <p class="text-lg text-black font-bold" id="job_company_name"><?php echo $company_name;?></p>
                             <div class="flex flex-row items-center gap-1">
                             <p class="text-lg">£<?php echo format_salary(get_post_meta(get_the_ID(), 'job_salary', true));?></p> -
                                 <p class="text-lg"> <?php echo  $job_shift = get_post_meta(get_the_ID(), 'job_shift', true); ?></p>
@@ -35,7 +37,7 @@ $job_downloads_two = get_post_meta(get_the_ID(), 'job_downloads_two', true);
                             <a href="<?php echo $job_application_link = get_post_meta(get_the_ID(), 'job_application_link', true);?>" class="text-xl text-black border border-black border-1 bg-gray-300 py-1 px-4 rounded">Apply</a>
                         </div>
                         <div>
-                            <p class="text-sm text-black"><?php echo 'Added ' . human_time_diff(get_the_time('U'), current_time('timestamp')) . ' ago'; ?></p>
+                            <p class="text-sm text-black"><?php echo 'Added ' . $time_diff . ' ago'; ?></p>
                         </div>
                     </div>
                 </div>

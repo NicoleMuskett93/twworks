@@ -10,6 +10,8 @@ $job_start_date = get_post_meta(get_the_ID(), 'job_start_date', true);
 $company_logo = get_field('company_logo', 'user_' . get_the_author_meta('ID'));
 $company_name = get_field('company_name', 'user_'. get_the_author_meta('ID'));
 
+$publish_timestamp = get_the_time('U');
+$time_diff = human_time_diff($publish_timestamp);
 
 ?>
 
@@ -31,7 +33,7 @@ $company_name = get_field('company_name', 'user_'. get_the_author_meta('ID'));
             <p class="text-xl text-black"> - <?php echo $job_shift;?></p>
         </div>
         <div class="flex flex-row justify-between">
-            <p class="text-xl text-black"><?php echo human_time_diff( get_the_time('U'), current_time('timestamp') ) . ' ago'; ?></p>
+            <p class="text-xl text-black"><?php echo $time_diff . ' ago'; ?></p>
             <a href="<?php the_permalink( );?>" class="text-xl text-black border border-black border-1 bg-gray-300 p-2 rounded">See more</a>
         </div>
     </div>

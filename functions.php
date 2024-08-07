@@ -247,13 +247,14 @@ function redirect_admin_from_my_jobs() {
 }
 add_action('template_redirect', 'redirect_admin_from_my_jobs');
 
+
 function change_menu_name($items, $args) {
     // Check if the menu is the one at the 'login' location
     if ($args->theme_location == 'login') {
         // Check if the user is logged in
         if (is_user_logged_in()) {
             $current_user = wp_get_current_user();
-            $display_name = $current_user->display_name;
+            $display_name = $current_user->user_firstname . ' ' . $current_user->user_lastname;
 
             // Check if the current user has the 'employer' role
             if (in_array('employer', (array) $current_user->roles)) {
@@ -281,6 +282,25 @@ function change_menu_name($items, $args) {
 }
 
 add_filter('wp_nav_menu_items', 'change_menu_name', 10, 2);
+
+function logout_link($items, $args) {
+    // Check if the menu is the one at the 'login' location
+    if ($args->theme_location == 'login') {
+        // Check if the user is logged in and has the 'employer' role
+        $custom_link = 'https://garyb173.sg-host.com/my-jobs/';
+        if (is_user_logged_in() && in_array('employer', (array) wp_get_current_user()->roles)) {
+            // Find the submenu within the existing menu items and append the logout link
+            $logout_link = '<li><a href="' . esc_url(wp_logout_url($custom_link)) . '">Log Out</a></li>';
+            $items = str_replace('</ul>', $logout_link . '</ul>', $items);
+        }
+    }
+    return $items;
+}
+
+add_filter('wp_nav_menu_items', 'logout_link', 10, 2);
+
+
+
 
 
 function add_body_classes_based_on_user_role($classes) {
@@ -317,7 +337,7 @@ add_action('init', function() {
         $job_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0; // For updating post
         $job_title = sanitize_text_field($_POST['job_title']);
         $job_salary = sanitize_text_field($_POST['job_salary']);
-        $job_description = sanitize_textarea_field($_POST['job_description']);
+        $job_description = wp_kses_post($_POST['job_description']); // Allow HTML tags
         $job_supplemental_pay = sanitize_text_field($_POST['job_supplemental_pay']);
         $job_time = sanitize_text_field($_POST['job_time']);
         $job_shift = sanitize_text_field($_POST['job_shift']);
@@ -328,13 +348,17 @@ add_action('init', function() {
         $file_name_one = sanitize_file_name( $job_downloads_one['name'] );
         $file_name_two = sanitize_file_name( $job_downloads_two['name'] );
         $job_application_link = sanitize_text_field($_POST['job_application_link']);
+        $job_publish_date_str = strtotime(sanitize_text_field($_POST['job_publish_date']));
         $job_publish_date = sanitize_text_field($_POST['job_publish_date']);
         $job_expiry_date = sanitize_text_field($_POST['job_expiry_date']);
         $job_status = isset($_POST['job_status']) ? sanitize_text_field($_POST['job_status']) : 'publish'; // Default to 'publish'
+        $job_company_name = sanitize_text_field($_POST['job_company_name']);
 
 
         // Determine post status and post date
         $post_date = current_time('mysql');
+
+
 
      
         if ($job_status === 'future') {
@@ -418,8 +442,13 @@ add_action('init', function() {
             update_post_meta($job_id, 'job_downloads_one', $file_url_one);
             update_post_meta($job_id, 'job_downloads_two', $file_url_two);
             update_post_meta($job_id, 'job_application_link', $job_application_link);
-            update_post_meta($job_id, 'job_publish_date', $job_publish_date);
+            update_post_meta($job_id, 'job_publish_date', $job_publish_date_str);
             update_post_meta($job_id, 'job_expiry_date', $job_expiry_date);
+            update_post_meta($job_id, 'job_description', $job_description);
+            update_post_meta($job_id, 'job_company_name', $job_company_name);
+
+
+
 
             wp_redirect(add_query_arg('status', 'success', home_url('/my-jobs/')));
             exit;
@@ -430,52 +459,42 @@ add_action('init', function() {
     }
 });
 
-
 function filter_jobs_ajax_handler() {
-    // Check if this is an AJAX request
     if ( isset( $_POST['action'] ) && $_POST['action'] == 'filter_jobs' ) {
-        
-        // Retrieve filter parameters from AJAX request
-        $search_query = isset($_POST['s']) ? sanitize_text_field($_POST['s']) : '';
+        // Retrieve filter parameters
         $full_or_part_time = isset( $_POST['full_or_part_time'] ) ? sanitize_text_field( $_POST['full_or_part_time'] ) : '';
         $location = isset( $_POST['location'] ) ? sanitize_text_field( $_POST['location'] ) : '';
         $min_salary = isset($_POST['min_salary']) ? floatval($_POST['min_salary']) : '';
         $max_salary = isset($_POST['max_salary']) ? floatval($_POST['max_salary']) : '';
-
-       
+        $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
 
         // Set up $args for WP_Query
         $args = array(
             'post_type' => 'jobs',
-            'posts_per_page' => 5,
+            'posts_per_page' => 10,
             'post_status' => 'publish',
-            'meta_query' => array('relation' => 'AND'), // Ensuring multiple conditions are combined properly
-            's' => $search_query,
+            'paged' => $paged,
+            'meta_query' => array('relation' => 'AND'),
+            // 's' => $search_query,
         );
-
 
         if ( $full_or_part_time ) {
             $args['meta_query'][] = array(
-                array(
-                    'key' => 'job_time', 
-                    'value' => $full_or_part_time,
-                    'compare' => '='
-                )
+                'key' => 'job_time', 
+                'value' => $full_or_part_time,
+                'compare' => '='
             );
         }
 
         if ( $location ) { 
             $args['meta_query'][] = array(
-                array(
-                    'key' => 'job_location', 
-                    'value' => $location,
-                    'compare' => '='
-                )
+                'key' => 'job_location', 
+                'value' => $location,
+                'compare' => '='
             );
         }
 
         if ($min_salary || $max_salary) {
-            // Use slider values as the salary range
             $args['meta_query'][] = array(
                 'key' => 'job_salary',
                 'value' => array($min_salary, $max_salary),
@@ -487,58 +506,80 @@ function filter_jobs_ajax_handler() {
         // Perform WP_Query
         $posts = new WP_Query( $args );
 
-        // Check if there are posts
         if ( $posts->have_posts() ) {
+            ob_start();
             while ( $posts->have_posts() ) {
                 $posts->the_post();
-                // Output your post content as needed
                 get_template_part( 'template-parts/content', 'jobs' );
             }
-            wp_reset_postdata(); // Reset post data
+            $response = ob_get_clean();
+            wp_reset_postdata();
+
+            wp_send_json_success([
+                'posts' => $response,
+                'max_pages' => $posts->max_num_pages,
+                'current_page' => $paged,
+                'total_posts' => $posts->found_posts,
+                'posts_returned' => $posts->post_count
+            ]);
         } else {
-            echo 'No jobs found.';
+            wp_send_json_error(['message' => 'No jobs found.']);
         }
 
-        // Always die() after outputting the data in AJAX
         wp_die();
     }
 }
 add_action( 'wp_ajax_filter_jobs', 'filter_jobs_ajax_handler' );
 add_action( 'wp_ajax_nopriv_filter_jobs', 'filter_jobs_ajax_handler' );
 
+
 // Handle searching jobs
 function search_jobs_ajax_handler() {
-    // Check if this is an AJAX request
     if ( isset( $_POST['action'] ) && $_POST['action'] == 'search_jobs' ) {
-        // Retrieve search query from AJAX request
         $search_query = isset( $_POST['s'] ) ? sanitize_text_field( $_POST['s'] ) : '';
+        $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
+        $search_type = isset($_POST['search_type']) ? sanitize_text_field($_POST['search_type']) : 'all';
+        $status = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'publish';
+    
 
-        // Set up $args for WP_Query
         $args = array(
             'post_type' => 'jobs',
-            'posts_per_page' => -1,
+            'posts_per_page' => 10,
+            'paged' => $paged,
             's' => $search_query,
-            'post_status' => 'publish'
-        );
-
-        // Perform WP_Query
-        $posts = new WP_Query( $args );
+            'post_status' => $status,
 
         
+        );
 
-        // Check if there are posts
-        if ( $posts->have_posts() ) {
-            while ( $posts->have_posts() ) {
-                $posts->the_post();
-                // Output your post content as needed
-                get_template_part( 'template-parts/content', 'jobs' );
-            }
-            wp_reset_postdata(); // Reset post data
-        } else {
-            echo 'No jobs found.';
+         // Adjust the query based on search type
+         if ( $search_type === 'my' && is_user_logged_in() ) {
+            $current_user_id = get_current_user_id();
+            $args['author'] = $current_user_id;
         }
 
-        // Always die() after outputting the data in AJAX
+        $posts = new WP_Query( $args );
+
+        if ( $posts->have_posts() ) {
+            ob_start();
+            while ( $posts->have_posts() ) {
+                $posts->the_post();
+                get_template_part( 'template-parts/content', 'jobs' );
+            }
+            $response = ob_get_clean();
+            wp_reset_postdata();
+
+            wp_send_json_success([
+                'posts' => $response,
+                'max_pages' => $posts->max_num_pages,
+                'current_page' => $paged,
+                'total_posts' => $posts->found_posts,
+                'posts_returned' => $posts->post_count
+            ]);
+        } else {
+            wp_send_json_error(['message' => 'No jobs found.']);
+        }
+
         wp_die();
     }
 }
@@ -547,48 +588,195 @@ add_action( 'wp_ajax_nopriv_search_jobs', 'search_jobs_ajax_handler' );
 
 // Handle AJAX request for loading more posts
 function load_more_jobs_ajax_handler() {
-    $paged = isset($_POST['page']) ? intval($_POST['page']) : 1;
-    $args = array(
-        'post_type' => 'jobs',
-        'paged' => $paged,
-        'posts_per_page' => 5,
-        'post_status' => 'publish',
-        // Add more arguments here if needed
-    );
+    if ( isset( $_POST['action'] ) && $_POST['action'] == 'load_more_jobs' ) {
+        $paged = isset($_POST['page']) ? intval($_POST['page']) : 1;
+        $search_query = isset($_POST['s']) ? sanitize_text_field($_POST['s']) : '';
+        $full_or_part_time = isset( $_POST['full_or_part_time'] ) ? sanitize_text_field( $_POST['full_or_part_time'] ) : '';
+        $location = isset( $_POST['location'] ) ? sanitize_text_field( $_POST['location'] ) : '';
+        $min_salary = isset($_POST['min_salary']) ? floatval($_POST['min_salary']) : '';
+        $max_salary = isset($_POST['max_salary']) ? floatval($_POST['max_salary']) : '';
 
-    $query = new WP_Query($args);
+        $args = array(
+            'post_type' => 'jobs',
+            'paged' => $paged,
+            'posts_per_page' => 10,
+            'post_status' => 'publish',
+            'meta_query' => array('relation' => 'AND'),
+            's' => $search_query,
 
-    if ($query->have_posts()) {
-        $max_pages = $query->max_num_pages;
-        $total_posts = $query->found_posts;
-        ob_start();
+        );
 
-        while ($query->have_posts()) {
-            $query->the_post();
-            get_template_part('template-parts/content', 'jobs'); // Adjust this based on your template structure
+        if ( $full_or_part_time ) {
+            $args['meta_query'][] = array(
+                'key' => 'job_time', 
+                'value' => $full_or_part_time,
+                'compare' => '='
+            );
         }
 
-        $response = ob_get_clean();
+        if ( $location ) { 
+            $args['meta_query'][] = array(
+                'key' => 'job_location', 
+                'value' => $location,
+                'compare' => '='
+            );
+        }
 
-        wp_send_json_success([
-            'posts' => $response,
-            'max_pages' => $max_pages,
-            'current_page' => $paged,
-            'total_posts' => $total_posts,
-            'posts_returned' => $query->post_count
-        ]);
-    } else {
-        wp_send_json_error(['message' => 'No more jobs found']);
+        if ($min_salary || $max_salary) {
+            $args['meta_query'][] = array(
+                'key' => 'job_salary',
+                'value' => array($min_salary, $max_salary),
+                'compare' => 'BETWEEN',
+                'type' => 'NUMERIC'
+            );
+        }
+
+        $query = new WP_Query($args);
+
+        if ($query->have_posts()) {
+            ob_start();
+            while ($query->have_posts()) {
+                $query->the_post();
+                get_template_part('template-parts/content', 'jobs');
+            }
+            $response = ob_get_clean();
+
+            wp_send_json_success([
+                'posts' => $response,
+                'max_pages' => $query->max_num_pages,
+                'current_page' => $paged,
+                'total_posts' => $query->found_posts,
+                'posts_returned' => $query->post_count
+            ]);
+        } else {
+            wp_send_json_error(['message' => 'No more jobs found']);
+        }
+
+        wp_reset_postdata();
+        wp_die();
     }
-
-    wp_reset_postdata();
-    wp_die();
 }
 add_action('wp_ajax_load_more_jobs', 'load_more_jobs_ajax_handler');
 add_action('wp_ajax_nopriv_load_more_jobs', 'load_more_jobs_ajax_handler');
 
+// Handle AJAX request for categorising jobs
+
+function categorise_jobs_ajax_handler() {
+    if ( isset( $_POST['action'] ) && $_POST['action'] == 'categorise_jobs' ) {
+        $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
+        $status = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : '';
+        $args = array(
+            'post_type' => 'jobs',
+            'posts_per_page' => 10,
+            'paged' => $paged,
+            'author' => get_current_user_id(),
+            'orderby' => 'date',
+            'order' => 'DESC'
+            
+        );
+
+        if (!empty($status)) {
+            $args['post_status'] = $status;
+        } else {
+            $args['post_status'] = array('publish', 'draft', 'archive', 'future');
+        }
+
+        $query = new WP_Query($args);
+
+        if ($query->have_posts()) {
+            ob_start();
+            while ($query->have_posts()) {
+                $query->the_post();
+                get_template_part('template-parts/content', 'myjobs');
+            }
+            $response = ob_get_clean();
+            wp_reset_postdata();
+
+            wp_send_json_success([
+                'posts' => $response,
+                'max_pages' => $query->max_num_pages,
+                'current_page' => $paged,
+                'total_posts' => $query->found_posts,
+                'posts_returned' => $query->post_count,
+                'status' => $status
+
+            ]);
+        } else {
+            wp_send_json_error(['message' => 'No jobs found.']);
+        }
+
+        wp_die();
+    }
+}
+
+add_action('wp_ajax_categorise_jobs', 'categorise_jobs_ajax_handler');
 
 
+add_action('init', function() {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['custom_profile_nonce']) && wp_verify_nonce($_POST['custom_profile_nonce'], 'custom_profile_action')) {
+
+        // Check if the user is logged in
+        if (!is_user_logged_in()) {
+            wp_send_json_error(array('message' => 'User not logged in'));
+        }
+
+        $user_id = get_current_user_id();
+        parse_str($_POST['data'], $data);
+
+        $firstname = sanitize_text_field($data['firstname']);
+        $lastname = sanitize_text_field($data['lastname']);
+        $email = sanitize_email($data['email']);
+
+        $userdata = array(
+            'ID'           => $user_id,
+            'user_email'   => $email,
+            'first_name'   => $firstname,
+            'last_name'    => $lastname
+        );
+
+        $user_id = wp_update_user($userdata);
+
+        if (is_wp_error($user_id)) {
+            wp_send_json_error(array('message' => $user_id->get_error_message()));
+        } else {
+            wp_send_json_success();
+        }
+    }
+});
+
+
+function handle_profile_update() {
+    if (!is_user_logged_in()) {
+        wp_send_json_error(array('message' => 'User not logged in'));
+    }
+
+    $user_id = get_current_user_id();
+    parse_str($_POST['data'], $data);
+
+    $firstname = sanitize_text_field($data['firstname']);
+    $lastname = sanitize_text_field($data['lastname']);
+    $email = sanitize_email($data['email']);
+
+    $userdata = array(
+        'ID'           => $user_id,
+        'user_email'   => $email,
+        'first_name'   => $firstname,
+        'last_name'    => $lastname
+    );
+
+    $user_id = wp_update_user($userdata);
+
+    if (is_wp_error($user_id)) {
+        wp_send_json_error(array('message' => $user_id->get_error_message()));
+    } else {
+        wp_send_json_success(array(
+            'first_name' => $firstname,
+            'last_name' => $lastname,
+            'email' => $email
+        ));
+    }
+}
+add_action('wp_ajax_update_profile', 'handle_profile_update');
 
 
 function archive_expired_jobs() {
@@ -630,3 +818,46 @@ if (!wp_next_scheduled('daily_archive_expired_jobs')) {
 
 // Hook the function to the cron event
 add_action('daily_archive_expired_jobs', 'archive_expired_jobs');
+
+function before_login($content) {
+
+$content = get_custom_logo();
+return $content;
+}
+
+add_filter('login_form_top', 'before_login');
+
+//relevanssi functions
+
+// add_filter('relevanssi_content_to_index', 'custom_relevanssi_index_content', 20, 2);
+
+// function custom_relevanssi_index_content($content, $post) {
+
+//     if($post->post_type === 'jobs') {
+//         // Add post fields to the content
+//         $content .= ' ' . $post->post_title;
+//         $content .= ' ' . $post->post_content;
+//         $content .= ' ' . $post->post_excerpt;
+//         $content .= ' ' . $post->post_date;
+//         $content .= ' ' . $post->post_modified;
+//         $content .= ' ' . $post->post_author;
+//         $content .= ' ' . $post->post_status;
+//         $content .= ' ' . $post->post_type;
+//         $content .= ' ' . $post->post_parent;
+//         $content .= ' ' . $post->post_name;
+//         $content .= ' ' . $post->post_password;
+//         $content .= ' ' . $post->post_mime_type;
+
+//         // Add custom fields to the content
+//         $custom_fields = get_post_custom($post->ID);
+//         foreach ($custom_fields as $key => $values) {
+//             foreach ($values as $value) {
+//                 $content .= ' ' . wp_strip_all_tags($value);
+//             }
+//         }
+//     }
+
+//     return $content;
+// }
+
+

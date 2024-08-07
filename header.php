@@ -19,7 +19,7 @@
 	<header>
 
 		<div class="nav">
-			<div class="lg:flex items-center border-b bg-blue-50">
+			<div class="lg:flex items-center bg-blue-50">
 				<div class="flex flex-row justify-between items-center">
 					<div class="w-48">
 						<?php if ( has_custom_logo() ) { ?>

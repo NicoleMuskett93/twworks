@@ -37,12 +37,22 @@ $banner_image = get_field('banner_image', 'option');
                         $job_downloads_two = get_post_meta($job_post->ID, 'job_downloads_two', true);
                         $job_start_date = get_post_meta($job_post->ID, 'job_start_date', true);
                         $job_publish_date = get_post_meta($job_post->ID, 'job_publish_date', true);
+                        if ($job_publish_date) {
+                            // Create a DateTime object from the job publish date
+                            $date = date('Y-m-d', $job_publish_date);
+                            // Format the date
+                           //  $formatted_date = $date->format('j F Y');
+                           $job_publish_date = $date;
+                        }
                         $job_expiry_date = get_post_meta($job_post->ID, 'job_expiry_date', true);
                         $job_application_link = get_post_meta($job_post->ID, 'job_application_link', true);
+                        $job_description = get_post_meta($job_post->ID, 'job_description', true);
+                        $job_company_name = get_post_meta($job_post->ID, 'job_company_name', true);
                         ?>
 
                         <form class="flex flex-col gap-3" id="job_form_<?php echo esc_attr($job_post->ID); ?>" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="post_id" value="<?php echo esc_attr($job_post->ID); ?>" />
+                            <input type="hidden" id="job_company_name" name="job_company_name" value="<?php echo $current_user->company_name; ?>" />
                             <?php wp_nonce_field('custom_job_form_action', 'custom_job_form_nonce'); ?>
 
                             <div class="flex flex-row gap-10 items-center">
@@ -91,8 +101,8 @@ $banner_image = get_field('banner_image', 'option');
                                 <label class="text-xl font-semibold" for="job_description">Full Job Description</label>
                                 <?php 
                                     wp_editor(
-                                        esc_textarea($job_post->post_content), // Populate with the actual post content
-                                        'job_description', // Editor ID
+                                        $job_description, 
+                                        'job_description', 
                                         array(
                                             'wpautop' => true,
                                             'media_buttons' => true,
@@ -115,7 +125,7 @@ $banner_image = get_field('banner_image', 'option');
                             <div class="flex flex-col gap-3">
                                 <div class="flex flex-row gap-2">
                                 <label class="text-lg" for="job_downloads_one ">About your company</label>
-                                <input class="" type="file" id="job_downloads_one" name="job_downloads_one" />
+                                <input class="" type="file" id="job_downloads_one" name="job_downloads_one" /> 
                                 <?php if ($job_downloads_one) : ?>
                                     <p>Current File: <a href="<?php echo esc_url($job_downloads_one); ?>" target="_blank"><?php echo basename($job_downloads_one); ?></a></p>
                                 <?php endif; ?>
@@ -145,6 +155,9 @@ $banner_image = get_field('banner_image', 'option');
                                 <label class="text-xl" for="job_expiry_date">Expiry Date</label>
                                 <input class="w-1/2 border border-black border-1 rounded p-2" type="date" id="job_expiry_date" name="job_expiry_date" value="<?php echo esc_attr($job_expiry_date); ?>" />
                             </div>
+
+                            <?php echo $job_publish_date; ?>
+                            <?php echo $job_expiry_date; ?>
 
                             <div class="flex flex-row justify-start items-center gap-10">
                                 <div class="flex flex-row gap-2">

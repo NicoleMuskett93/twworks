@@ -1,4 +1,5 @@
 <?php get_header(); 
+$search_query = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
 
 $banner_image = get_field('banner_image', 'option');
 
@@ -10,7 +11,7 @@ if (is_user_logged_in()) {
         // Fetch counts for each status
         $published_query = new WP_Query(array(
             'post_type' => 'jobs',
-            'posts_per_page' => -1,
+            'posts_per_page' => 10,
             'author' => get_current_user_id(),
             'post_status' => 'publish'
         ));
@@ -19,7 +20,7 @@ if (is_user_logged_in()) {
 
         $draft_query = new WP_Query(array(
             'post_type' => 'jobs',
-            'posts_per_page' => -1,
+            'posts_per_page' => 10,
             'author' => get_current_user_id(),
             'post_status' => 'draft'
         ));
@@ -28,7 +29,7 @@ if (is_user_logged_in()) {
 
         $archive_query = new WP_Query(array(
             'post_type' => 'jobs',
-            'posts_per_page' => -1,
+            'posts_per_page' => 10,
             'author' => get_current_user_id(),
             'post_status' => 'archive'
         ));
@@ -36,7 +37,7 @@ if (is_user_logged_in()) {
 
         $scheduled_query = new WP_Query(array(
             'post_type' => 'jobs',
-            'posts_per_page' => -1,
+            'posts_per_page' => 10,
             'author' => get_current_user_id(),
             'post_status' => 'future'
         ));
@@ -65,20 +66,25 @@ if (is_user_logged_in()) {
                     <p id="archive-tab" class="title cursor-pointer" data-status="archive">Archive (<?php echo esc_html($archive_count); ?>)</p>
                     <p id="scheduled-tab" class="title cursor-pointer" data-status="future">Scheduled (<?php echo esc_html($scheduled_count); ?>)</p>
                 </div>
-                <div id="job-listing-container" class="posts-content flex flex-col gap-5">
+                <div id="my-job-listing-container" class="posts-content flex flex-col gap-5">
                     <?php
                         // Define query arguments
                         $args = array(
                             'post_type' => 'jobs', // Custom post type slug
-                            'posts_per_page' => -1, // Display all posts
+                            'posts_per_page' => 10, // Display all posts
                             'author' => get_current_user_id(), // Only posts by current user
                             'post_status' => array('publish', 'draft', 'archive','future'), // Include all statuses
+                            's' => $search_query, // Search query
+                            // 'meta_key' => 'job_publish_date',
+                            // 'orderby' => 'meta_value',
+                            // 'order' => 'DESC', // Order by descending order
                         );
 
                         // Perform the query
                         $query = new WP_Query($args);
 
                         if ($query->have_posts()) :
+                            $max_pages = $query->max_num_pages;
                             while ($query->have_posts()) :
                                 $query->the_post();
                                 $status = get_post_status();
@@ -89,11 +95,11 @@ if (is_user_logged_in()) {
                                 $job_shift = get_post_meta(get_the_ID(), 'job_shift', true);
                                 $job_location = get_post_meta(get_the_ID(), 'job_location', true);
                                 $job_start_date = get_post_meta(get_the_ID(), 'job_start_date', true);
-                                $job_publish_date = get_post_meta(get_the_ID(), 'job_start_date', true);
+                                $job_publish_date = get_post_meta(get_the_ID(), 'job_publish_date', true);
 
                                 $company_logo = get_field('company_logo', 'user_' . get_the_author_meta('ID'));
                             ?>
-                            <div class="job-post flex flex-row" data-status="<?php echo esc_attr($status); ?>">
+                            <div class="my-job-post flex flex-row" data-status="<?php echo esc_attr($status); ?>">
                                 <div class="flex flex-col gap-3 w-1/6">
                                     <?php if ($company_logo) : ?>
                                     <img class="w-full h-full rounded-md object-contain p-3 bg-white" src="<?php echo esc_url($company_logo); ?>" alt="<?php echo esc_attr(get_the_author_meta('display_name', get_the_author_meta('ID'))); ?>">
@@ -110,13 +116,14 @@ if (is_user_logged_in()) {
                                     </div>
                                     <div class="flex flex-row justify-between">
                                     <?php
-                                        if ($job_publish_date) {
-                                            // Create a DateTime object from the job publish date
-                                            $date = new DateTime($job_publish_date);
-                                            // Format the date
-                                            $formatted_date = $date->format('j F Y');
-                                            echo '<p class="text-xl text-black">' . esc_html($formatted_date) . '</p>';
-                                        }
+                                   
+                                    if ($job_publish_date) {
+                                        // Create a DateTime object from the job publish date
+                                        $date = date('j F Y', $job_publish_date);
+                                        // Format the date
+                                       //  $formatted_date = $date->format('j F Y');
+                                       echo '<p class="text-xl text-black">' . esc_html( $date ) . '</p>';
+                                    }
                                     ?>
                                         <a href="<?php echo esc_url(home_url('/edit-jobs/?post_id=' . get_the_ID())); ?>" class="cursor-pointer text-xl text-black border border-black border-1 bg-gray-300 p-2 rounded">Edit</a>
                                     </div>
@@ -130,8 +137,15 @@ if (is_user_logged_in()) {
                         endif;
                     ?>
                 </div>
-                
+                 <!-- Load More Jobs Button -->
+                <?php if($max_pages > 1) : ?>
+                <div class="flex justify-center">
+                    <button id="load-more-my-jobs" class="mt-4 bg-blue-500 text-white p-2 rounded" data-page="1" data-max-pages="<?php echo $max_pages;?>">Load More Jobs</button>
+                    <div id="loading" style="display:none;">Loading...</div>
+                </div>
+                <?php endif; ?>
             </div>
+           
         </div>
     </div>
 <?php
@@ -154,15 +168,24 @@ if (is_user_logged_in()) {
         'value_username' => '',
         'value_remember' => false
     );
-    ?> <div class="login my-5">
-            <?php echo wp_login_form($args); ?>
+    //loginform top to add image
+    ?> <div class="custom-login">
+            <?php echo wp_login_form($args); 
+            // $login_form_top = apply_filters( 'login_form_top', '', $args );
+            // $login_form_top .= sprintf('<img src="https://garyb173.sg-host.com/wp-content/uploads/2024/06/xlogo.png.pagespeed.ic_.vin3YSmmMj.png" alt="logo">');
+            // echo $login_form_top;
+
+            //moved to functions.php
+
+            ?>
+            <a href="<?php echo esc_url(wp_lostpassword_url()); ?>" class="text-base mt-4">Forgotten your password?</a>
         </div>
 <?php }
 ?>
 
 <?php get_footer(); ?>
 
-<script>
+<!-- <script>
     document.addEventListener('DOMContentLoaded', function () {
         const tabs = document.querySelectorAll('.title');
         const jobPosts = document.querySelectorAll('.job-post');
@@ -190,4 +213,4 @@ if (is_user_logged_in()) {
             });
         });
     });
-</script>
+</script> -->

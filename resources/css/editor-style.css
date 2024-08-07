@@ -16,3 +16,9 @@ body {
 .wp-block[data-align=full] {
     @apply max-w-full;
 }
+
+.login form {
+
+    border:red 3px solid;
+
+}
