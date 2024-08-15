@@ -106,6 +106,7 @@ $company_name = $current_user->company_name;?>
                             <input class="w-1/2 border border-black border-1 rounded p-2" type="date" id="job_publish_date" name="job_publish_date" placeholder="08/07/2024" required />
                         </div>
 
+
                         <div class="flex flex-row gap-10 items-center">
                             <label class="text-xl" for="job_expiry_date">Expiry Date</label>
                             <input class="w-1/2 border border-black border-1 rounded p-2" type="date" id="job_expiry_date" name="job_expiry_date" placeholder="08/07/2024" required />

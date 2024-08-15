@@ -10,7 +10,7 @@ $job_start_date = get_post_meta(get_the_ID(), 'job_start_date', true);
 $company_logo = get_field('company_logo', 'user_' . get_the_author_meta('ID'));
 $company_name = get_field('company_name', 'user_'. get_the_author_meta('ID'));
 
-$publish_timestamp = get_the_time('U');
+$publish_timestamp = get_post_time('U + 1');
 $time_diff = human_time_diff($publish_timestamp);
 
 ?>

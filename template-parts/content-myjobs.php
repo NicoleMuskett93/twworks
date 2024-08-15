@@ -1,11 +1,12 @@
 <?php 
-     $job_salary = get_post_meta(get_the_ID(), 'job_salary', true);
-     $job_supplemental_pay = get_post_meta(get_the_ID(), 'job_supplemental_pay', true);
-     $job_time = get_post_meta(get_the_ID(), 'job_time', true);
-     $job_shift = get_post_meta(get_the_ID(), 'job_shift', true);
-     $job_location = get_post_meta(get_the_ID(), 'job_location', true);
-     $job_start_date = get_post_meta(get_the_ID(), 'job_start_date', true);
-     $job_publish_date = get_post_meta(get_the_ID(), 'job_publish_date', true);
+    $job_salary = get_post_meta(get_the_ID(), 'job_salary', true);
+    $job_supplemental_pay = get_post_meta(get_the_ID(), 'job_supplemental_pay', true);
+    $job_time = get_post_meta(get_the_ID(), 'job_time', true);
+    $job_shift = get_post_meta(get_the_ID(), 'job_shift', true);
+    $job_location = get_post_meta(get_the_ID(), 'job_location', true);
+    $job_start_date = get_post_meta(get_the_ID(), 'job_start_date', true);
+    $job_publish_date = get_post_meta(get_the_ID(), 'job_publish_date', true);
+    $status = get_post_status();
 
      $company_logo = get_field('company_logo', 'user_' . get_the_author_meta('ID'));
  ?>
@@ -18,6 +19,7 @@
      <div class="flex flex-col bg-white w-5/6 p-3">
          <div>
              <h2 class="text-xl text-black font-bold"><?php the_title(); ?></h2>
+             <?php echo $status;?>
              <p class="text-xl text-black"><?php echo esc_html($current_user->company_name); ?></p>
          </div>
          <div class="flex flex-row gap-1">
@@ -26,13 +28,14 @@
          </div>
          <div class="flex flex-row justify-between">
             <?php
-            if ($job_publish_date) {
-                // Create a DateTime object from the job publish date
-                $date = date('j F Y', $job_publish_date);
+              if ($job_publish_date) {
+                // Convert to timestamp if not already
+                $timestamp = is_numeric($job_publish_date) ? $job_publish_date : strtotime($job_publish_date);
+
                 // Format the date
-               //  $formatted_date = $date->format('j F Y');
-               echo '<p class="text-xl text-black">' . esc_html( $date ) . '</p>';
-            }
+                $formatted_date = date('j F Y', $timestamp);
+                echo '<p class="text-xl text-black">' . esc_html($formatted_date) . '</p>';
+                }
             ?>
              <a href="<?php echo esc_url(home_url('/edit-jobs/?post_id=' . get_the_ID())); ?>" class="cursor-pointer text-xl text-black border border-black border-1 bg-gray-300 p-2 rounded">Edit</a>
          </div>

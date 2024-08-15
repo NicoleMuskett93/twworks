@@ -27,14 +27,25 @@ $banner_image = get_field('banner_image', 'option');
             <form id="job-filter-form" class="flex flex-col gap-4 mt-4" method="get">
                     
                 <div class="flex flex-row items-center justify-between">
-                    <label class="text-lg font-semibold" for="job_salary">Salary</label>
-                    <div id="salary_slider" class="w-1/2"></div>
+                    <label class="text-lg font-semibold" for="salary">Salary</label>
+                    <!-- <div id="salary_slider" class="w-1/2"></div>
                     <input type="hidden" id="min_salary" name="min_salary">
                     <input type="hidden" id="max_salary" name="max_salary">
                     <div class="text-lg">
                         <span id="salary_value">£20000 - £50000</span>
-                    </div>
+                    </div> -->
+
                     <!-- <div class="text-lg"><span>£</span><span id="salary_value">20000 - 40000</span></div> -->
+
+                    <select class="w-1/2 border rounded p-2" id="salary" name="salary">
+                        <option value="">All</option>
+                        <option value="hundred">£100,000 +</option>
+                        <option value="eighty">£80,000 - £100,000</option>
+                        <option value="sixty">£60,000 - £80,000</option>
+                        <option value="forty">£40,000 - £60,000</option>
+                        <option value="twenty">£20,000 - £40,000</option>
+                        <option value="zero">£0 - £20,000</option>
+                    </select>
                 </div>
 
                 <div class="flex flex-row items-center justify-between">

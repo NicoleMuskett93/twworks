@@ -8,7 +8,7 @@ $job_downloads_one = get_post_meta(get_the_ID(), 'job_downloads_one', true);
 $job_downloads_two = get_post_meta(get_the_ID(), 'job_downloads_two', true);
 
 
-$publish_timestamp = get_the_time('U');
+$publish_timestamp = get_the_time('U + 1');
 $time_diff = human_time_diff($publish_timestamp);
 ?>
 

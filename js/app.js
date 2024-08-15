@@ -4,50 +4,25 @@
     var filterData = {
       full_or_part_time: "",
       location: "",
-      min_salary: "",
-      max_salary: ""
+      salary: "",
+      published: ""
     };
-    var salarySlider = document.getElementById("salary_slider");
-    if (salarySlider) {
-      noUiSlider.create(salarySlider, {
-        start: [2e4, 5e4],
-        connect: true,
-        range: {
-          min: 0,
-          max: 1e5
-        },
-        step: 5e3,
-        tooltips: true,
-        format: {
-          to: function(value) {
-            return Math.round(value);
-          },
-          from: function(value) {
-            return Number(value);
-          }
-        }
-      });
-      salarySlider.noUiSlider.on("update", function(values) {
-        $("#min_salary").val(values[0]);
-        $("#max_salary").val(values[1]);
-        $("#salary_value").text("\xA3" + Math.round(values[0]) + " - \xA3" + Math.round(values[1]));
-      });
-    }
     $("#job-filter-form").on("change", function(event) {
       event.preventDefault();
       filterData.full_or_part_time = $("#full_or_part_time").val();
       filterData.location = $("#location").val();
-      filterData.min_salary = $("#min_salary").val();
-      filterData.max_salary = $("#max_salary").val();
+      filterData.salary = $("#salary").val();
+      filterData.published = $("#when_published").val();
       filterJobs(1);
     });
-    $("#reset-filters").on("click", function() {
+    $("#filter-reset").on("click", function() {
       filterData = {
         full_or_part_time: "",
         location: "",
-        min_salary: "",
-        max_salary: ""
+        salary: "",
+        published: ""
       };
+      $("#job-filter-form")[0].reset();
       filterJobs(1);
     });
     function performSearch(searchQuery, searchType, page2, status) {
@@ -118,8 +93,8 @@
           action: "filter_jobs",
           full_or_part_time: filterData.full_or_part_time,
           location: filterData.location,
-          min_salary: filterData.min_salary,
-          max_salary: filterData.max_salary,
+          salary: filterData.salary,
+          published: filterData.published,
           paged: page2
         },
         beforeSend: function() {
@@ -162,11 +137,13 @@
           tab2.classList.remove("active");
         });
         this.classList.add("active");
-        filterMyJobs(status, page2);
+        filterMyJobs(status);
       });
     });
-    function filterMyJobs(status, page2) {
+    function filterMyJobs(status, page2 = 1) {
       console.log("Requesting page:", page2);
+      console.log("Status:", status);
+      console.log("Page:", page2);
       $.ajax({
         url: "/wp-admin/admin-ajax.php",
         type: "POST",
@@ -179,7 +156,7 @@
           $("#loading").show();
         },
         success: function(response) {
-          console.log("Filter response:", response);
+          console.log("Filter response:", response, status);
           if (response.success) {
             if (page2 === 1) {
               $("#my-job-listing-container").html(response.data.posts);

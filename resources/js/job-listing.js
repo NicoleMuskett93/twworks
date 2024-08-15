@@ -2,41 +2,9 @@ jQuery(document).ready(function ($) {
   var filterData = {
     full_or_part_time: "",
     location: "",
-    min_salary: "",
-    max_salary: "",
+    salary: "",
+    published: "",
   };
-
-  // Initialize noUiSlider for salary range
-  var salarySlider = document.getElementById("salary_slider");
-  if (salarySlider) {
-    noUiSlider.create(salarySlider, {
-      start: [20000, 50000],
-      connect: true,
-      range: {
-        min: 0,
-        max: 100000,
-      },
-      step: 5000,
-      tooltips: true,
-      format: {
-        to: function (value) {
-          return Math.round(value);
-        },
-        from: function (value) {
-          return Number(value);
-        },
-      },
-    });
-
-    // Update hidden inputs with slider values
-    salarySlider.noUiSlider.on("update", function (values) {
-      $("#min_salary").val(values[0]);
-      $("#max_salary").val(values[1]);
-      $("#salary_value").text(
-        "£" + Math.round(values[0]) + " - £" + Math.round(values[1])
-      );
-    });
-  }
 
   // Handle filter form submission
   $("#job-filter-form").on("change", function (event) {
@@ -44,22 +12,24 @@ jQuery(document).ready(function ($) {
 
     filterData.full_or_part_time = $("#full_or_part_time").val();
     filterData.location = $("#location").val();
-    filterData.min_salary = $("#min_salary").val();
-    filterData.max_salary = $("#max_salary").val();
+    filterData.salary = $("#salary").val();
+    filterData.published = $("#when_published").val();
 
     filterJobs(1); // Reset to page 1 when filtering
   });
 
   //reset filters on button click
-  $("#reset-filters").on("click", function () {
+  $("#filter-reset").on("click", function () {
     filterData = {
       full_or_part_time: "",
       location: "",
-      min_salary: "",
-      max_salary: "",
+      salary: "",
+      published: "",
     };
 
-    filterJobs(1); // Reset to page 1 when filtering
+    $("#job-filter-form")[0].reset();
+
+    filterJobs(1);
   });
 
   function performSearch(searchQuery, searchType, page, status) {
@@ -143,8 +113,10 @@ jQuery(document).ready(function ($) {
         action: "filter_jobs",
         full_or_part_time: filterData.full_or_part_time,
         location: filterData.location,
-        min_salary: filterData.min_salary,
-        max_salary: filterData.max_salary,
+        // min_salary: filterData.min_salary,
+        // max_salary: filterData.max_salary,
+        salary: filterData.salary,
+        published: filterData.published,
         paged: page,
       },
       beforeSend: function () {
@@ -175,6 +147,7 @@ jQuery(document).ready(function ($) {
           }
           $("#load-more-jobs").hide();
         }
+
         $("#loading").hide();
       },
       error: function (errorThrown) {
@@ -200,12 +173,14 @@ jQuery(document).ready(function ($) {
       // Add 'active' class to the clicked tab
       this.classList.add("active");
 
-      filterMyJobs(status, page);
+      filterMyJobs(status);
     });
   });
 
-  function filterMyJobs(status, page) {
+  function filterMyJobs(status, page = 1) {
     console.log("Requesting page:", page);
+    console.log("Status:", status);
+    console.log("Page:", page);
     $.ajax({
       url: "/wp-admin/admin-ajax.php",
       type: "POST",
@@ -218,7 +193,7 @@ jQuery(document).ready(function ($) {
         $("#loading").show();
       },
       success: function (response) {
-        console.log("Filter response:", response);
+        console.log("Filter response:", response, status);
         if (response.success) {
           if (page === 1) {
             $("#my-job-listing-container").html(response.data.posts);
@@ -261,4 +236,26 @@ jQuery(document).ready(function ($) {
     // Increment page before passing it to filterMyJobs
     filterMyJobs($(this).data("status"), page + 1);
   });
+
+  // On selection of publish make sure date is today
+  // $("#job_published").on("click", function () {
+  //   console.log($("#job_published").val());
+  //   const selectedDate = $("#job_publish_date").val();
+  //   const todayDate = new Date().toISOString().split("T")[0];
+  //   const futureField = $('#job_future');
+
+  //   // Remove any existing error message
+  //   $("#date-error-message").remove();
+
+  //   if (selectedDate === !todayDate) {
+  //     console.log("date matches");
+
+  //   } else {
+  //     //Display an inline error message
+  //     $("#job_publish_date").after(
+  //       '<span id="date-error-message" style="color: red;">Publish date must be set to today.</span>'
+  //     );
+  //     $("#job_publish_date").focus(); // Focus on the date field
+  //   }
+  // });
 });

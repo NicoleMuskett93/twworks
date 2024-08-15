@@ -49,10 +49,10 @@ function tw_works_enqueue_scripts() {
 	wp_enqueue_style('login-css', site_url('/wp-admin/css/login.min.css'), array(), $theme->get( 'Version' ));
 
       // use cdn npm not working
-      if (is_page('jobs')) {
-        wp_enqueue_style('nouislider-css', 'https://cdn.jsdelivr.net/npm/nouislider@14.7.0/distribute/nouislider.css');
-        wp_enqueue_script('nouislider', 'https://cdn.jsdelivr.net/npm/nouislider@14.7.0/distribute/nouislider.js', array(), null, true);
-      }
+    //   if (is_page('jobs')) {
+    //     wp_enqueue_style('nouislider-css', 'https://cdn.jsdelivr.net/npm/nouislider@14.7.0/distribute/nouislider.css');
+    //     wp_enqueue_script('nouislider', 'https://cdn.jsdelivr.net/npm/nouislider@14.7.0/distribute/nouislider.js', array(), null, true);
+    //   }
 }
 
 add_action( 'wp_enqueue_scripts', 'tw_works_enqueue_scripts' );
@@ -326,13 +326,15 @@ function localize_app_script() {
         'displayName' => $current_user->display_name,
         'roles' => $current_user->roles
     ));
+
+
 }
 add_action('wp_enqueue_scripts', 'localize_app_script');
 
 
 add_action('init', function() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['custom_job_form_nonce']) && wp_verify_nonce($_POST['custom_job_form_nonce'], 'custom_job_form_action')) {
-
+        
         // Sanitize and validate input data
         $job_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0; // For updating post
         $job_title = sanitize_text_field($_POST['job_title']);
@@ -345,26 +347,24 @@ add_action('init', function() {
         $job_start_date = sanitize_text_field($_POST['job_start_date']);
         $job_downloads_one = ($_FILES['job_downloads_one']);
         $job_downloads_two = ($_FILES['job_downloads_two']);
-        $file_name_one = sanitize_file_name( $job_downloads_one['name'] );
-        $file_name_two = sanitize_file_name( $job_downloads_two['name'] );
+        $file_name_one = sanitize_file_name($job_downloads_one['name']);
+        $file_name_two = sanitize_file_name($job_downloads_two['name']);
         $job_application_link = sanitize_text_field($_POST['job_application_link']);
         $job_publish_date_str = strtotime(sanitize_text_field($_POST['job_publish_date']));
         $job_publish_date = sanitize_text_field($_POST['job_publish_date']);
         $job_expiry_date = sanitize_text_field($_POST['job_expiry_date']);
         $job_status = isset($_POST['job_status']) ? sanitize_text_field($_POST['job_status']) : 'publish'; // Default to 'publish'
         $job_company_name = sanitize_text_field($_POST['job_company_name']);
-
-
+    
         // Determine post status and post date
         $post_date = current_time('mysql');
-
-
-
-     
+            
         if ($job_status === 'future') {
             $post_date = date('Y-m-d H:i:s', strtotime($job_publish_date . ' 00:00:00'));
         }
+        // if post status is then changed again to publish update status
 
+        
         // Upload file
         
         if($job_downloads_one){
@@ -387,8 +387,14 @@ add_action('init', function() {
                 $file_url_one = wp_get_attachment_url($attachment_id_one);
                 
             }
+            else{
+                $file_url_one = get_post_meta($job_id, 'job_downloads_one', true);
+            }
 
         }
+
+        
+        
 
         if($job_downloads_two){
             if(!empty ($file_name_two)){
@@ -408,25 +414,38 @@ add_action('init', function() {
                 wp_update_attachment_metadata( $attachment_id_two, $attachment_data_two );
 
                 $file_url_two = wp_get_attachment_url($attachment_id_two);
+            }else {
+                $file_url_two = get_post_meta($job_id, 'job_downloads_two', true);
                 
             }
-
         }
 
         // Prepare post data
         $post_data = array(
-            'post_title'   => $job_title,
-            'post_content' => $job_description,
-            'post_status'  => $job_status,
-            'post_author'  => get_current_user_id(),
-            'post_type'    => 'jobs',
-            'post_date'    => $post_date,
+            'post_title'    => $job_title,
+            'post_content'  => $job_description,
+            'post_status'   => $job_status,
+            'post_author'   => get_current_user_id(),
+            'post_type'     => 'jobs',
+            'post_date'     => $post_date
         );
 
         if ($job_id > 0) {
             // Update existing job
             $post_data['ID'] = $job_id;
-            wp_update_post($post_data);
+            $current_job_status = get_post_status( $post_data['ID'] );
+
+            //going from schueduled to published
+            if ( $job_status === 'publish' && $current_job_status === 'future' ) {
+                $post_data['post_date_gmt'] = current_time('mysql', 1);
+            }
+
+            //going from published to schueduled
+
+            if($job_status === 'future' && $current_job_status === 'publish'){
+                $post_data['post_date_gmt'] = date('Y-m-d H:i:s', strtotime($job_publish_date . ' 00:00:00'));
+            }
+            $result = wp_update_post($post_data);
         } else {
             // Create new job
             $job_id = wp_insert_post($post_data);
@@ -449,7 +468,6 @@ add_action('init', function() {
 
 
 
-
             wp_redirect(add_query_arg('status', 'success', home_url('/my-jobs/')));
             exit;
         } else {
@@ -464,9 +482,12 @@ function filter_jobs_ajax_handler() {
         // Retrieve filter parameters
         $full_or_part_time = isset( $_POST['full_or_part_time'] ) ? sanitize_text_field( $_POST['full_or_part_time'] ) : '';
         $location = isset( $_POST['location'] ) ? sanitize_text_field( $_POST['location'] ) : '';
-        $min_salary = isset($_POST['min_salary']) ? floatval($_POST['min_salary']) : '';
-        $max_salary = isset($_POST['max_salary']) ? floatval($_POST['max_salary']) : '';
+        // $min_salary = isset($_POST['min_salary']) ? floatval($_POST['min_salary']) : '';
+        // $max_salary = isset($_POST['max_salary']) ? floatval($_POST['max_salary']) : '';
+        $salary = isset($_POST['salary']) ? sanitize_text_field($_POST['salary']) : '';
+        $published = isset($_POST['published']) ? sanitize_text_field($_POST['published']) : '';
         $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
+       
 
         // Set up $args for WP_Query
         $args = array(
@@ -478,6 +499,7 @@ function filter_jobs_ajax_handler() {
             // 's' => $search_query,
         );
 
+  
         if ( $full_or_part_time ) {
             $args['meta_query'][] = array(
                 'key' => 'job_time', 
@@ -494,14 +516,60 @@ function filter_jobs_ajax_handler() {
             );
         }
 
-        if ($min_salary || $max_salary) {
+        $salary_ranges = array(
+            'hundred' => array(100000, PHP_INT_MAX),
+            'eighty' => array(80000, 100000),
+            'sixty' => array(60000, 80000),
+            'forty' => array(40000, 60000),
+            'twenty' => array(20000, 40000),
+            'zero' => array(0, 20000),
+        );
+        
+        if ($salary && isset($salary_ranges[$salary])) {
             $args['meta_query'][] = array(
                 'key' => 'job_salary',
-                'value' => array($min_salary, $max_salary),
+                'value' => $salary_ranges[$salary],
                 'compare' => 'BETWEEN',
                 'type' => 'NUMERIC'
             );
         }
+        
+
+        // if ($min_salary || $max_salary) {
+        //     $args['meta_query'][] = array(
+        //         'key' => 'job_salary',
+        //         'value' => array($min_salary, $max_salary),
+        //         'compare' => 'BETWEEN',
+        //         'type' => 'NUMERIC'
+        //     );
+        // }
+
+        if($published) {
+            switch ($published) {
+                case 'today':
+                    $args['date_query'] = array(
+                        array(
+                            'after' => date('Y-m-d', strtotime('1 day ago'))
+                        )
+                    );
+                    break;
+                case 'this-week':
+                    $args['date_query'] = array(
+                        array(
+                            'after' => date('Y-m-d', strtotime('1 week ago'))
+                        )
+                    );
+                    break;
+                case 'this-month':
+                    $args['date_query'] = array(
+                        array(
+                            'after' => date('Y-m-d', strtotime('1 month ago'))
+                        )
+                    );
+                    break;
+            }
+        }
+
 
         // Perform WP_Query
         $posts = new WP_Query( $args );
@@ -593,8 +661,10 @@ function load_more_jobs_ajax_handler() {
         $search_query = isset($_POST['s']) ? sanitize_text_field($_POST['s']) : '';
         $full_or_part_time = isset( $_POST['full_or_part_time'] ) ? sanitize_text_field( $_POST['full_or_part_time'] ) : '';
         $location = isset( $_POST['location'] ) ? sanitize_text_field( $_POST['location'] ) : '';
-        $min_salary = isset($_POST['min_salary']) ? floatval($_POST['min_salary']) : '';
-        $max_salary = isset($_POST['max_salary']) ? floatval($_POST['max_salary']) : '';
+        $salary = isset($_POST['salary']) ? intval($_POST['salary']) : '';
+        $status = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'publish';
+        // $min_salary = isset($_POST['min_salary']) ? floatval($_POST['min_salary']) : '';
+        // $max_salary = isset($_POST['max_salary']) ? floatval($_POST['max_salary']) : '';
 
         $args = array(
             'post_type' => 'jobs',
@@ -602,6 +672,7 @@ function load_more_jobs_ajax_handler() {
             'posts_per_page' => 10,
             'post_status' => 'publish',
             'meta_query' => array('relation' => 'AND'),
+            'status' => $status,
             's' => $search_query,
 
         );
@@ -622,14 +693,33 @@ function load_more_jobs_ajax_handler() {
             );
         }
 
-        if ($min_salary || $max_salary) {
+        $salary_ranges = array(
+            'hundred' => array(100000, PHP_INT_MAX),
+            'eighty' => array(80000, 100000),
+            'sixty' => array(60000, 80000),
+            'forty' => array(40000, 60000),
+            'twenty' => array(20000, 40000),
+            'zero' => array(0, 20000),
+        );
+        
+        if ($salary && isset($salary_ranges[$salary])) {
             $args['meta_query'][] = array(
                 'key' => 'job_salary',
-                'value' => array($min_salary, $max_salary),
+                'value' => $salary_ranges[$salary],
                 'compare' => 'BETWEEN',
                 'type' => 'NUMERIC'
             );
         }
+        
+
+        // if ($min_salary || $max_salary) {
+        //     $args['meta_query'][] = array(
+        //         'key' => 'job_salary',
+        //         'value' => array($min_salary, $max_salary),
+        //         'compare' => 'BETWEEN',
+        //         'type' => 'NUMERIC'
+        //     );
+        // }
 
         $query = new WP_Query($args);
 
@@ -664,14 +754,14 @@ add_action('wp_ajax_nopriv_load_more_jobs', 'load_more_jobs_ajax_handler');
 function categorise_jobs_ajax_handler() {
     if ( isset( $_POST['action'] ) && $_POST['action'] == 'categorise_jobs' ) {
         $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
-        $status = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : '';
+        $status = isset($_POST['status']) ? sanitize_text_field($_POST['status']) : 'publish';
         $args = array(
             'post_type' => 'jobs',
             'posts_per_page' => 10,
             'paged' => $paged,
             'author' => get_current_user_id(),
             'orderby' => 'date',
-            'order' => 'DESC'
+            'order' => 'DESC',
             
         );
 
@@ -680,6 +770,9 @@ function categorise_jobs_ajax_handler() {
         } else {
             $args['post_status'] = array('publish', 'draft', 'archive', 'future');
         }
+
+        // Debugging: Log the status value
+        error_log('Status: ' . $status);
 
         $query = new WP_Query($args);
 
@@ -698,8 +791,6 @@ function categorise_jobs_ajax_handler() {
                 'current_page' => $paged,
                 'total_posts' => $query->found_posts,
                 'posts_returned' => $query->post_count,
-                'status' => $status
-
             ]);
         } else {
             wp_send_json_error(['message' => 'No jobs found.']);

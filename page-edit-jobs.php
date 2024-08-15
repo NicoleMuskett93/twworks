@@ -37,12 +37,15 @@ $banner_image = get_field('banner_image', 'option');
                         $job_downloads_two = get_post_meta($job_post->ID, 'job_downloads_two', true);
                         $job_start_date = get_post_meta($job_post->ID, 'job_start_date', true);
                         $job_publish_date = get_post_meta($job_post->ID, 'job_publish_date', true);
-                        if ($job_publish_date) {
-                            // Create a DateTime object from the job publish date
-                            $date = date('Y-m-d', $job_publish_date);
-                            // Format the date
-                           //  $formatted_date = $date->format('j F Y');
-                           $job_publish_date = $date;
+                        // if ($job_publish_date) {
+                        //     // Create a DateTime object from the job publish date
+                        // //     $job_publish_date = strtotime($job_publish_date);
+                        // //     $date = date('j F Y', $job_publish_date);
+                        // //     // Format the date
+                        // //    //  $formatted_date = $date->format('j F Y');
+                        //     }
+                        if (is_numeric($job_publish_date)) {
+                            $job_publish_date = date('Y-m-d', $job_publish_date);
                         }
                         $job_expiry_date = get_post_meta($job_post->ID, 'job_expiry_date', true);
                         $job_application_link = get_post_meta($job_post->ID, 'job_application_link', true);
@@ -148,7 +151,7 @@ $banner_image = get_field('banner_image', 'option');
 
                             <div class="flex flex-row gap-10 items-center">
                                 <label class="text-xl" for="job_publish_date">Publish Date</label>
-                                <input class="w-1/2 border border-black border-1 rounded p-2" type="date" id="job_publish_date" name="job_publish_date" value="<?php echo esc_attr($job_publish_date); ?>" />
+                                <input class="w-1/2 border border-black border-1 rounded p-2" type="date" id="job_publish_date_edit" name="job_publish_date" value="<?php echo esc_html( $job_publish_date ); ?>" />
                             </div>
 
                             <div class="flex flex-row gap-10 items-center">
@@ -162,10 +165,16 @@ $banner_image = get_field('banner_image', 'option');
                             <div class="flex flex-row justify-start items-center gap-10">
                                 <div class="flex flex-row gap-2">
                                     <label class="text-xl" for="job_status"></label>
-                                    <div class="flex flex-row gap-2">
+                                    <div id="cont_job_published" class="flex flex-row gap-2">
                                         <input type="radio" id="job_published" name="job_status" class="cursor-pointer" value="publish" <?php checked($job_post->post_status, 'publish'); ?>>
-                                        <label for="job_published">Published</label>
+                                        <label for="job_published">Publish</label>
                                     </div>
+
+                                    <div id="cont_job_future" class="flex flex-row gap-2 hidden">
+                                        <input type="radio" id="job_future" name="job_status" class="cursor-pointer" value="future" <?php checked($job_post->post_status, 'future'); ?>>
+                                        <label for="job_future">Schedule</label>
+                                    </div>
+
                                     <div class="flex flex-row gap-2">
                                         <input type="radio" id="job_draft" name="job_status" class="cursor-pointer" value="draft" <?php checked($job_post->post_status, 'draft'); ?>>
                                         <label for="job_draft">Draft</label>
@@ -174,10 +183,12 @@ $banner_image = get_field('banner_image', 'option');
                                         <input type="radio" id="job_archive" name="job_status" class="cursor-pointer" value="archive" <?php checked($job_post->post_status, 'archive'); ?>>
                                         <label for="job_archive">Archive</label>
                                     </div>
+                                    
+                                
                                 </div>
 
                                 <div class="flex flex-row gap-10">
-                                    <input class="cursor-pointer border border-1 border-black bg-gray-300 py-2 px-10 rounded" type="submit" value="Update" />
+                                    <input id="job_update" class="cursor-pointer border border-1 border-black bg-gray-300 py-2 px-10 rounded" type="submit" value="Update" />
                                 </div>
                             </div>
                         </form>
@@ -195,3 +206,60 @@ $banner_image = get_field('banner_image', 'option');
 <?php } ?>
 
 <?php get_footer(); ?>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let publishDateField = document.getElementById("job_publish_date_edit");
+        let publishButton = document.getElementById("cont_job_published");
+        let futureButton = document.getElementById("cont_job_future");
+        let submitButton = document.getElementById("job_update");
+        let formActionInput = document.getElementById("job_status");
+
+        function updateButtonValuee() {
+            let publishDateInput = publishDateField.value;  // Use dynamic value
+            let editPublishDate = new Date(publishDateInput);
+            let now = new Date();
+            
+            //use gmt here
+            
+
+            console.log(publishDateInput);
+            console.log(now);
+
+            console.log("Publish Date:", publishDateInput, "Now:", now);
+
+            if (!isNaN(editPublishDate) && editPublishDate > now) {
+                futureButton.classList.remove("hidden");
+                futureButton.classList.add("block");
+                publishButton.classList.add("hidden");  
+            } 
+            if (!isNaN(editPublishDate) && editPublishDate <= now) {
+                publishButton.classList.remove("hidden");
+                publishButton.classList.add("block");
+                futureButton.classList.add("hidden");
+            }
+
+            console.log(editPublishDate);
+        }
+
+        // Listen for input changes dynamically
+        publishDateField.addEventListener("input", updateButtonValuee);
+
+        // submitButton.addEventListener('click', function() {
+        //     let publishDateInput = publishDateField.value;  // Use dynamic value
+        //     let publishDate = new Date(publishDateInput);
+        //     let now = new Date();
+
+        //     console.log("Submit Button Clicked:", publishDate);
+
+        //     if (!isNaN(publishDate) && publishDate > now) {
+        //         formActionInput.value = "future";
+
+        //     } else {
+        //         formActionInput.value = "publish";
+        //     }
+
+        //     console.log("Form Action:", formActionInput.value);
+        // });
+    });
+</script>
