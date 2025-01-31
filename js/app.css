@@ -557,7 +557,7 @@ button.swiper-pagination-bullet {
 .swiper-fade .swiper-slide-active .swiper-slide-active {
   pointer-events: auto;
 }
-.swiper-cube {
+.swiper.swiper-cube {
   overflow: visible;
 }
 .swiper-cube .swiper-slide {
@@ -617,7 +617,7 @@ button.swiper-pagination-bullet {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
-.swiper-flip {
+.swiper.swiper-flip {
   overflow: visible;
 }
 .swiper-flip .swiper-slide {
@@ -650,7 +650,7 @@ button.swiper-pagination-bullet {
     opacity,
     height;
 }
-.swiper-cards {
+.swiper.swiper-cards {
   overflow: visible;
 }
 .swiper-cards .swiper-slide {

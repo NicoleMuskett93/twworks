@@ -15,29 +15,6 @@ $description_hidden = get_field('description_hidden', 'option');
     <div class="hidden lg:flex justify-center items-center h-[350px] md:mt-10" style="background-image:url('<?php echo $banner_image['url']; ?>'); background-position: center">
 
     </div>
-    <div class="hidden lg:flex flex-col lg:flex-row ">
-        <div class="w-full lg:w-1/3"></div>
-
-
-        <div class=" w-full lg:w-2/3 ">
-            <div class="flex flex-col bg-lightergreen gap-[15px] pb-0 p-8 ml-3 mr-8 lg:h-[220px] -mt-[175px]  lg:-mt-[220px] " id="main-content">
-                <h2 class="text-2xl font-bold text-black"><?php echo $title; ?></h2>
-                <div class="flex flex-col gap-5 text-black text-base"><?php echo $description; ?></div>
-                <div class="flex justify-end openinfo">
-                    <a href="#" id="morelink" class="text-darkergreen text-base underline pb-5">More</a>
-                </div>
-            </div>
-
-            <div class="hidden bg-lightergreen flex flex-col gap-5 p-8 pt-5 ml-3 mr-8 " id="infosection">
-                <div>
-                    <div class="flex flex-col gap-5 text-black text-base"><?php echo $description_hidden; ?></div>
-                </div>
-                <div class="flex justify-end closeinfo">
-                    <a href="#" id="lesslink" class="text-darkergreen text-base underline">Less</a>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="strip block md:hidden px-5 py-4">
         <p class="text-white text-2xl text-center font-bold">Find a Job in Tunbridge Wells</p>
@@ -95,7 +72,7 @@ $description_hidden = get_field('description_hidden', 'option');
                     'taxonomy' => 'post_tag',
                     'field' => 'slug',
                     'terms' => 'volunteering',
-                    'operator' => 'NOT IN'
+                    'operator' => 'IN'
                 )
             )
 
@@ -138,6 +115,8 @@ $description_hidden = get_field('description_hidden', 'option');
 
         <?php
         // Check if there are posts
+
+
         if ($query->have_posts()) :
             $max_pages = $query->max_num_pages;
             while ($query->have_posts()) :
@@ -148,6 +127,7 @@ $description_hidden = get_field('description_hidden', 'option');
         else :
             echo 'No jobs to display';
         endif;
+
         ?>
 
     </div>

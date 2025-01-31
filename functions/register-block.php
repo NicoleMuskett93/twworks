@@ -39,6 +39,20 @@ function twworks_register_blocks()
 			'keywords'			=> array('twworks, testimonial')
 		));
 
+		//stats block
+
+		acf_register_block(array(
+			'name'				=> 'twworks-stats',
+			'title'				=> __('TWWorks Stats'),
+			'description'		=> __('Create a Stats block for the TWWorks website'),
+			'render_template'	=> 'template-parts/blocks/stats.php',
+			'category'			=> 'twworks_category',
+			'icon'				=> 'slides',
+			'keywords'			=> array('twworks, stats')
+		));
+
+
+
 
 		
 	}

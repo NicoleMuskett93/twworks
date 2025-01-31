@@ -28,6 +28,7 @@ module.exports = {
 
       fontFamily: {
         neuzeit: ["neuzeit-grotesk", "sans-serif"],
+        nunito: ["Nunito-Sans", "sans-serif"],
       },
     },
     screens: {
