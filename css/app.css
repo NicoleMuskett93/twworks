@@ -1749,7 +1749,6 @@ ul {
 
 #secondary-menu #menu-secondary-menu li .sub-menu {
   transform: skewX(15deg);
-  margin-right: -15px;
 }
 
 #secondary-menu #menu-secondary-menu li .sub-menu li a {
@@ -1855,8 +1854,8 @@ ul {
   display: flex;
   position: absolute;
   top: 100%;
-  right: 0;
-  width: 100vw;
+  right: -10px;
+  width: calc(100vw + 10px);
   justify-content: flex-end;
   padding: 15px 40px;
   gap: 100px;
@@ -1869,8 +1868,8 @@ ul {
   display: flex;
   position: absolute;
   top: 100%;
-  right: 0;
-  width: 100vw;
+  right: -10px;
+  width: calc(100vw + 10px);
   justify-content: flex-end;
   padding: 15px 40px;
   gap: 100px;
@@ -1883,8 +1882,8 @@ ul {
   display: flex;
   position: absolute;
   top: 100%;
-  right: 0;
-  width: 100vw;
+  right: -10px;
+  width: calc(100vw + 10px);
   justify-content: flex-end;
   padding: 15px 40px;
   gap: 100px;
@@ -1892,13 +1891,13 @@ ul {
   height: 50px;
 }
 
-#secondary-menu #menu-secondary-menu .purple.current-menu-item .sub-menu {
+#secondary-menu #menu-secondary-menu .purple.current-menu-parent .sub-menu {
   background: #7837a0;
   display: flex;
   position: absolute;
   top: 100%;
-  right: 0;
-  width: 100vw;
+  right: -10px;
+  width: calc(100vw + 10px);
   justify-content: flex-end;
   padding: 15px 40px;
   gap: 100px;
@@ -1982,7 +1981,16 @@ ul {
 #search-submit i {
   font-size: 1.25rem;
   /* Adjust size as needed */
-  color: @apply text-darkergreen;
+  --tw-text-opacity: 1;
+  color: rgb(24 136 6 / var(--tw-text-opacity));
+}
+
+.tag-volunteering #search-submit i {
+  color: #7837a0;
+}
+
+.volunteering-page #search-submit i {
+  color: #7837a0;
 }
 
 #primary-menu .current-menu-item a {
@@ -2281,6 +2289,7 @@ ul {
 
   #mobile #menu-mobile-menu .dropdown ul {
     list-style: none;
+    padding-left:0;
   }
 }
 

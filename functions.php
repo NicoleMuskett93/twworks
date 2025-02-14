@@ -578,12 +578,17 @@ add_action('init', function () {
             //remove volunteering tag
             wp_remove_object_terms($job_id, 'volunteering', 'post_tag');
         }
-
+        
 
 
         if ($job_id) {
             update_post_meta($job_id, 'volunteering', $volunteering);
-            update_post_meta($job_id, 'job_salary', $job_salary);
+
+            if(is_numeric($job_salary)){
+                update_post_meta($job_id, 'job_salary', $job_salary);
+            } else {
+                error_log('Invalid salary value');
+            }
             update_post_meta($job_id, 'job_supplemental_pay', $job_supplemental_pay);
             update_post_meta($job_id, 'job_time', $job_time);
             update_post_meta($job_id, 'job_shift', $job_shift);

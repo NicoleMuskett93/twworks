@@ -197,7 +197,7 @@ ul {
 
 #secondary-menu #menu-secondary-menu li .sub-menu {
   transform: skewX(15deg);
-  margin-right: -15px;
+  
 }
 
 #secondary-menu #menu-secondary-menu li .sub-menu li a {
@@ -302,8 +302,8 @@ ul {
   display: flex;
   position: absolute;
   top: 100%;
-  right: 0;
-  width: 100vw;
+  right: -10px;
+  width: calc(100vw + 10px);
   justify-content: flex-end;
   padding: 15px 40px;
   gap: 100px;
@@ -316,8 +316,8 @@ ul {
   display: flex;
   position: absolute;
   top: 100%;
-  right: 0;
-  width: 100vw;
+  right: -10px;
+  width: calc(100vw + 10px);
   justify-content: flex-end;
   padding: 15px 40px;
   gap: 100px;
@@ -330,8 +330,8 @@ ul {
   display: flex;
   position: absolute;
   top: 100%;
-  right: 0;
-  width: 100vw;
+  right: -10px;
+  width: calc(100vw + 10px);
   justify-content: flex-end;
   padding: 15px 40px;
   gap: 100px;
@@ -339,19 +339,22 @@ ul {
   height: 50px;
 }
 
-#secondary-menu #menu-secondary-menu .purple.current-menu-item .sub-menu {
+#secondary-menu #menu-secondary-menu .purple.current-menu-parent .sub-menu {
   background: #7837a0;
   display: flex;
   position: absolute;
   top: 100%;
-  right: 0;
-  width: 100vw;
+  right: -10px;
+  width: calc(100vw + 10px);
   justify-content: flex-end;
   padding: 15px 40px;
   gap: 100px;
   align-items: center;
   height: 50px;
 }
+
+
+
 
 .post-section {
   display: none; /* Hide all sections by default */
@@ -419,7 +422,7 @@ ul {
 
 #search-submit i {
   font-size: 1.25rem; /* Adjust size as needed */
-  color: @apply text-darkergreen;
+  @apply text-darkergreen;
 }
 
 #primary-menu .current-menu-item a {
@@ -706,6 +709,7 @@ ul {
 
   #mobile #menu-mobile-menu .dropdown ul {
     list-style: none;
+    padding-left:0;
   }
 }
 

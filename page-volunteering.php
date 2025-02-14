@@ -179,7 +179,7 @@ $vol_description_hidden = get_field('vol_description_hidden', 'option');
                 </div>
             <?php endif; ?>
         </div>
-        <div class="flex flex-col gap-3 m-5 lg:m-8 lg:mt-0 p-5 lg:p-8 bg-lighterpurple">
+        <!-- <div class="flex flex-col gap-3 m-5 lg:m-8 lg:mt-0 p-5 lg:p-8 bg-lighterpurple">
             <h2 class="text-black font-bold text-2xl">Need advice or support?</h2>
             <p>Below is a list of recruitment companies who can provide further advice and support:</p>
             <div class="flex flex-col gap-1">
@@ -190,7 +190,7 @@ $vol_description_hidden = get_field('vol_description_hidden', 'option');
                 <a href="https://www.interquestgroup.com" target="_blank" class="text-darkergreen">Interquest Group Recruitment</a>
                 <a href="https://www.office-angels.com" target="_blank" class="text-darkergreen">Office Angels Recruitment</a>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 </div>
