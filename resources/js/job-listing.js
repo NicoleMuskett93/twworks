@@ -2,156 +2,126 @@ jQuery(document).ready(function ($) {
   var filterData = {
     full_or_part_time: "",
     location: "",
-    min_salary: "",
-    max_salary: "",
+    salary: "",
+    published: "",
+    sector: "",
+    shift_type: "",
   };
 
-  // Initialize noUiSlider for salary range
-  var salarySlider = document.getElementById("salary_slider");
-  if (salarySlider) {
-    noUiSlider.create(salarySlider, {
-      start: [20000, 50000],
-      connect: true,
-      range: {
-        min: 0,
-        max: 100000,
-      },
-      step: 5000,
-      tooltips: true,
-      format: {
-        to: function (value) {
-          return Math.round(value);
-        },
-        from: function (value) {
-          return Number(value);
-        },
-      },
-    });
-
-    // Update hidden inputs with slider values
-    salarySlider.noUiSlider.on("update", function (values) {
-      $("#min_salary").val(values[0]);
-      $("#max_salary").val(values[1]);
-      $("#salary_value").text(
-        "£" + Math.round(values[0]) + " - £" + Math.round(values[1])
-      );
-    });
-  }
-
-  // Handle filter form submission
-  $("#job-filter-form").on("change", function (event) {
+  //Handle filter form submission
+  $(
+    "#job-filter-form, #mobile-job-filter-form, #when_published, #when_published_mobile"
+  ).on("change", function (event) {
     event.preventDefault();
 
     filterData.full_or_part_time = $("#full_or_part_time").val();
     filterData.location = $("#location").val();
-    filterData.min_salary = $("#min_salary").val();
-    filterData.max_salary = $("#max_salary").val();
+    filterData.salary = $("#salary").val();
+    filterData.sector = $("#sector").val();
+    filterData.shift_type = $("#shift_type").val();
+
+    filterData.published = $("#when_published").val();
+
+    // Mobile form values
+    filterData.published =
+      $("#when_published_mobile").val() || filterData.published; // Prioritize mobile value if available
+
+    console.log("Calling filter jobs - change");
 
     filterJobs(1); // Reset to page 1 when filtering
   });
 
   //reset filters on button click
-  $("#reset-filters").on("click", function () {
+  $("#filter-reset").on("click", function () {
     filterData = {
       full_or_part_time: "",
       location: "",
-      min_salary: "",
-      max_salary: "",
+      salary: "",
+      published: "",
+      sector: "",
+      shift_type: "",
+      sortOrder: "newest_first",
     };
 
-    filterJobs(1); // Reset to page 1 when filtering
+    $("#job-filter-form")[0].reset();
+
+    // Optionally reset the published filter if it's outside the form
+    $("#when_published").val("");
+
+    console.log("Calling filter jobs - reset");
+
+    // Reset mobile form
+    $("#mobile-job-filter-form")[0].reset();
+    $("#when_published_mobile").val("");
+
+    filterJobs(1);
   });
-
-  function performSearch(searchQuery, searchType, page, status) {
-    $.ajax({
-      url: "/wp-admin/admin-ajax.php",
-      type: "POST",
-      data: {
-        action: "search_jobs",
-        s: searchQuery,
-        search_type: searchType, // Pass the search type
-        paged: page,
-        status: status,
-      },
-      success: function (response) {
-        console.log("Search response:", response);
-        if (response.success) {
-          if (page === 1) {
-            $("#job-listing-container").html(response.data.posts);
-            $("#my-job-listing-container").html(response.data.posts);
-          } else {
-            $("#job-listing-container").append(response.data.posts);
-            $("#my-job-listing-container").append(response.data.posts);
-          }
-          $("#load-more-jobs").data("page", page);
-
-          if (
-            page >= response.data.max_pages ||
-            response.data.posts_returned < 10
-          ) {
-            $("#load-more-jobs").hide();
-            $("#load-more-my-jobs").hide();
-          } else {
-            $("#load-more-jobs").show();
-            $("#load-more-my-jobs").show();
-          }
-        } else {
-          if (page === 1) {
-            $("#job-listing-container").html("<p>No jobs found.</p>");
-            $("#my-job-listing-container").html("<p>No jobs found.</p>");
-          }
-          $("#load-more-jobs").hide();
-          $("#load-more-my-jobs").hide();
-        }
-      },
-      error: function (errorThrown) {
-        console.log("Search error:", errorThrown);
-      },
-    });
-  }
 
   // Define the page variable
   let page = 1;
+  let postCount = $("#posts-count").text();
+
+  // Prevent form submission on Enter key press
+
+  $("#search-input").keydown(function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+    }
+  });
+
+  // Handle search form submission
 
   // Search input handling
   let timeout = null;
   $("#search-input").on("input", function (e) {
     e.preventDefault();
     const searchQuery = $(this).val();
-    const searchType = $(this).siblings('input[name="search_type"]').val(); // Determine search type
-    const status = $(".title.active").data("status");
 
     clearTimeout(timeout);
 
     timeout = setTimeout(function () {
-      performSearch(searchQuery, searchType, page, status);
+      filterJobs(1, searchQuery);
     }, 500);
   });
 
   // Load more jobs on button click
   $("#load-more-jobs").on("click", function () {
     var page = $(this).data("page") || 1;
+    console.log("Calling filter jobs - pagination");
     filterJobs(page + 1);
   });
 
-  function filterJobs(page) {
+  function filterJobs(page, searchQuery = "") {
+    if (searchQuery === "") {
+      searchQuery = $("#search-input").val();
+    }
+
     console.log("Requesting page:", page); // Debugging line
+    console.log("Search query:", searchQuery); // Debugging line
     $.ajax({
       url: "/wp-admin/admin-ajax.php",
       type: "POST",
       data: {
         action: "filter_jobs",
+        page_id: $("#page-wrapper").data("page-id"),
         full_or_part_time: filterData.full_or_part_time,
         location: filterData.location,
-        min_salary: filterData.min_salary,
-        max_salary: filterData.max_salary,
+        // min_salary: filterData.min_salary,
+        // max_salary: filterData.max_salary,
+        salary: filterData.salary,
+        published: filterData.published,
+        sector: filterData.sector,
+        shift_type: filterData.shift_type,
         paged: page,
+        search_query: searchQuery,
+        sort_order: filterData.sortOrder || "newest_first",
       },
       beforeSend: function () {
         $("#loading").show();
       },
       success: function (response) {
         console.log("Filter response:", response); // Debugging line
+
         if (response.success) {
           if (page === 1) {
             $("#job-listing-container").html(response.data.posts);
@@ -159,12 +129,26 @@ jQuery(document).ready(function ($) {
             $("#job-listing-container").append(response.data.posts);
           }
 
+          // Update the displayed post count
+
+          postCount = $(".job-post").length;
+
+          $("#posts-count").text(postCount);
+          console.log(
+            "Posts returned:",
+            parseInt(postCount) + parseInt(response.data.posts_returned)
+          );
+
           $("#load-more-jobs").data("page", page);
 
           if (
             page >= response.data.max_pages ||
             response.data.posts_returned < 10
           ) {
+            console.log("hi");
+            $("#posts-count-block").show();
+            $("#posts-count").text(response.data.total_posts);
+
             $("#load-more-jobs").hide();
           } else {
             $("#load-more-jobs").show();
@@ -172,9 +156,13 @@ jQuery(document).ready(function ($) {
         } else {
           if (page === 1) {
             $("#job-listing-container").html("<p>No jobs found.</p>");
+            $("#posts-count").text(0);
+            // Update the displayed post count
+            // $("#posts-count-block").hide();
           }
           $("#load-more-jobs").hide();
         }
+
         $("#loading").hide();
       },
       error: function (errorThrown) {
@@ -200,12 +188,14 @@ jQuery(document).ready(function ($) {
       // Add 'active' class to the clicked tab
       this.classList.add("active");
 
-      filterMyJobs(status, page);
+      filterMyJobs(status);
     });
   });
 
-  function filterMyJobs(status, page) {
+  function filterMyJobs(status, page = 1) {
     console.log("Requesting page:", page);
+    console.log("Status:", status);
+    console.log("Page:", page);
     $.ajax({
       url: "/wp-admin/admin-ajax.php",
       type: "POST",
@@ -218,7 +208,7 @@ jQuery(document).ready(function ($) {
         $("#loading").show();
       },
       success: function (response) {
-        console.log("Filter response:", response);
+        console.log("Filter response:", response, status);
         if (response.success) {
           if (page === 1) {
             $("#my-job-listing-container").html(response.data.posts);
@@ -261,4 +251,63 @@ jQuery(document).ready(function ($) {
     // Increment page before passing it to filterMyJobs
     filterMyJobs($(this).data("status"), page + 1);
   });
+
+  // On selection of publish make sure date is today
+  // $("#job_published").on("click", function () {
+  //   console.log($("#job_published").val());
+  //   const selectedDate = $("#job_publish_date").val();
+  //   const todayDate = new Date().toISOString().split("T")[0];
+  //   const futureField = $('#job_future');
+
+  //   // Remove any existing error message
+  //   $("#date-error-message").remove();
+
+  //   if (selectedDate === !todayDate) {
+  //     console.log("date matches");
+
+  //   } else {
+  //     //Display an inline error message
+  //     $("#job_publish_date").after(
+  //       '<span id="date-error-message" style="color: red;">Publish date must be set to today.</span>'
+  //     );
+  //     $("#job_publish_date").focus(); // Focus on the date field
+  //   }
+  // });
+
+  //toggle info
+
+  const moreLink = $("#morelink");
+  const lessLink = $("#lesslink");
+
+  if (moreLink.length) {
+    moreLink.on("click", function (e) {
+      e.preventDefault();
+      $("#infosection").css("display", "flex");
+      $(".openinfo").css("display", "none");
+      //remove a class from main content
+      $("#main-content").removeClass("lg:h-[220px]");
+    });
+  }
+
+  if (lessLink.length) {
+    lessLink.on("click", function (e) {
+      e.preventDefault();
+      $("#main-content").css("display", "flex");
+      $("#infosection").css("display", "none");
+      $(".openinfo").css("display", "flex");
+      $("#main-content").addClass("lg:h-[220px]");
+    });
+  }
+
+  //hide ad popup
+
+  const adblock = $("#adblock");
+  const closeAd = $("#adclose");
+
+  if (adblock.length) {
+    closeAd.on("click", function (e) {
+      e.preventDefault();
+      adblock.css("display", "none");
+    });
+  }
 });

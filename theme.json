@@ -10,7 +10,7 @@
         {
           "name": "Primary",
           "slug": "primary",
-          "color": "#1A459D"
+          "color": "#214897"
         },
         {
           "name": "Secondary",
@@ -18,15 +18,53 @@
           "color": "#14B8A6"
         },
         {
-          "name": "Dark",
-          "slug": "dark",
-          "color": "#1F2937"
+          "name": "Darkergreen",
+          "slug": "darkergreen",
+          "color": "#188806"
         },
         {
-          "name": "Light",
-          "slug": "light",
-          "color": "#F9FAFB"
+          "name": "Lightgreen",
+          "slug": "lightgreen",
+          "color": "#D9F4DE;"
+        },
+        {
+          "name": "Offwhite",
+          "slug": "offwhite",
+          "color": "#F8FAFF"
+        },
+        {
+          "name": "Lightergreen",
+          "slug": "lightergreen",
+          "color": "#F7FFF9"
+        },
+        {
+          "name": "White",
+          "slug": "white",
+          "color": "#FFFFFF"
+        },
+        {
+          "name": "Grey",
+          "slug": "grey",
+          "color": "#878787"
+        },
+        {
+          "name": "Darkgrey",
+          "slug": "darkgrey",
+          "color": "#393939"
+        },
+        {
+          "name": "Black",
+          "slug": "black",
+          "color": "#000000"
+        },
+        {
+          "name": "Lighterpurple",
+          "slug": "lighterpurple",
+          "color": "#fcf7ff"
         }
+      
+
+        
       ]
     },
     "typography": {

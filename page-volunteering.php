@@ -3,16 +3,16 @@
 // $job_time_filter = isset($_GET['full_or_part_time']) ? $_GET['full_or_part_time'] : '';
 $search_query = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
 
-$banner_image = get_field('banner_image', 'option');
-$title = get_field('title', 'option');
-$description = get_field('description', 'option');
-$description_hidden = get_field('description_hidden', 'option');
+$vol_banner_image = get_field('vol_banner_image', 'option');
+$vol_title = get_field('vol_title', 'option');
+$vol_description = get_field('vol_description', 'option');
+$vol_description_hidden = get_field('vol_description_hidden', 'option');
 
 ?>
 
-<div class="<?php echo get_post_type(); ?> lg:mt-[50px]" data-page-id="<?php echo get_the_ID(); ?>" id="page-wrapper">
+<div class="<?php echo get_post_type(); ?> volunteering-page lg:mt-[50px]" data-page-id="<?php echo get_the_ID(); ?>" id="page-wrapper">
 
-    <div class="hidden lg:flex justify-center items-center h-[350px] md:mt-10" style="background-image:url('<?php echo $banner_image['url']; ?>'); background-position: center">
+    <div class="hidden lg:flex justify-center items-center h-[350px] md:mt-10" style="background-image:url('<?php echo $vol_banner_image['url']; ?>'); background-position: center">
 
     </div>
     <div class="hidden lg:flex flex-col lg:flex-row ">
@@ -20,20 +20,21 @@ $description_hidden = get_field('description_hidden', 'option');
 
 
         <div class=" w-full lg:w-2/3 ">
-            <div class="flex flex-col bg-lightergreen gap-[15px] pb-0 p-8 ml-3 mr-8 lg:h-[220px] -mt-[175px]  lg:-mt-[220px] " id="main-content">
-                <h2 class="text-2xl font-bold text-black"><?php echo $title; ?></h2>
-                <div class="flex flex-col gap-5 text-black text-base"><?php echo $description; ?></div>
-
-                <?php if ($description_hidden): ?>
+            <div class="flex flex-col bg-lighterpurple gap-[15px] pb-0 p-8 ml-3 mr-8 lg:h-[220px] -mt-[175px]  lg:-mt-[220px] " id="main-content">
+                <h2 class="text-2xl font-bold text-black"><?php echo $vol_title; ?></h2>
+                <div class="flex flex-col gap-5 text-black text-base"><?php echo $vol_description; ?></div>
+                <?php if ($vol_description_hidden): ?>
                     <div class="flex justify-end openinfo">
                         <a href="#" id="morelink" class="text-darkergreen text-base underline pb-5">More</a>
                     </div>
                 <?php endif; ?>
             </div>
-            <?php if ($description_hidden): ?>
-                <div class="hidden bg-lightergreen flex flex-col gap-5 p-8 pt-5 ml-3 mr-8 " id="infosection">
+
+            <?php if ($vol_description_hidden): ?>
+
+                <div class="hidden bg-lighterpurple flex flex-col gap-5 p-8 pt-5 ml-3 mr-8 " id="infosection">
                     <div>
-                        <div class="flex flex-col gap-5 text-black text-base"><?php echo $description_hidden; ?></div>
+                        <div class="flex flex-col gap-5 text-black text-base"><?php echo $vol_description_hidden; ?></div>
                     </div>
                     <div class="flex justify-end closeinfo">
                         <a href="#" id="lesslink" class="text-darkergreen text-base underline">Less</a>
@@ -50,7 +51,7 @@ $description_hidden = get_field('description_hidden', 'option');
         <div id="adblock" class="flex flex-col md:flex-row md:flex-wrap md:justify-evenly gap-3 md:gap-0 border border-darkergreen p-4 relative lg:w-2/3 w-full ">
             <div id="adclose" class="absolute right-[10px] top-[10px]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="#188806" />
+                    <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="#7837a0" />
                 </svg>
             </div>
 
@@ -99,7 +100,7 @@ $description_hidden = get_field('description_hidden', 'option');
                     'taxonomy' => 'post_tag',
                     'field' => 'slug',
                     'terms' => 'volunteering',
-                    'operator' => 'NOT IN'
+                    'operator' => 'IN'
                 )
             )
 
@@ -142,6 +143,8 @@ $description_hidden = get_field('description_hidden', 'option');
 
         <?php
         // Check if there are posts
+
+
         if ($query->have_posts()) :
             $max_pages = $query->max_num_pages;
             while ($query->have_posts()) :
@@ -152,6 +155,7 @@ $description_hidden = get_field('description_hidden', 'option');
         else :
             echo 'No jobs to display';
         endif;
+
         ?>
 
     </div>
@@ -175,7 +179,7 @@ $description_hidden = get_field('description_hidden', 'option');
                 </div>
             <?php endif; ?>
         </div>
-        <div class="flex flex-col gap-3 m-5 lg:m-8 lg:mt-0 p-5 lg:p-8 bg-lightergreen">
+        <div class="flex flex-col gap-3 m-5 lg:m-8 lg:mt-0 p-5 lg:p-8 bg-lighterpurple">
             <h2 class="text-black font-bold text-2xl">Need advice or support?</h2>
             <p>Below is a list of recruitment companies who can provide further advice and support:</p>
             <div class="flex flex-col gap-1">
