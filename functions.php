@@ -49,7 +49,10 @@ function tw_works_enqueue_scripts()
 
     wp_enqueue_style('tailpress', tw_works_asset('css/app.css'), array(), $theme->get('Version'));
     wp_enqueue_script('tailpress', tw_works_asset('js/app.js'), array('jquery'), $theme->get('Version'));
+
+    if(is_page('my-jobs')) {
     wp_enqueue_style('login-css', site_url('/wp-admin/css/login.min.css'), array(), $theme->get('Version'));
+    }
 
     // use cdn npm not working
     //   if (is_page('jobs')) {
