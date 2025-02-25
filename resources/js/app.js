@@ -200,3 +200,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
+
+jQuery(function($) {
+  if ($.fn.select2) {
+      $(".select-two").select2();
+  } else {
+      console.error("Select2 is not loaded.");
+  }
+});

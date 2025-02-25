@@ -74,6 +74,18 @@ function enqueue_swiper_files()
 
 add_action('wp_enqueue_scripts', 'enqueue_swiper_files');
 
+function enqueue_select2_scripts() {
+    // Load jQuery (it’s usually loaded by default)
+    wp_enqueue_script('jquery');
+
+    // Load Select2 JS
+    wp_enqueue_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '4.0.13', true);
+
+    // Load Select2 CSS
+    wp_enqueue_style('select2-css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', array(), '4.0.13');
+}
+add_action('wp_enqueue_scripts', 'enqueue_select2_scripts');
+
 /**
  * Get asset path.
  *
@@ -434,7 +446,7 @@ add_action('init', function () {
         $job_company_name = sanitize_text_field($_POST['job_company_name']);
         $job_workplace_benefits = isset($_POST['job_workplace_benefits']) ? $_POST['job_workplace_benefits'] : array();
         $job_sector = sanitize_text_field($_POST['job_sector']);
-        $job_role = sanitize_text_field($_POST['job_role']);
+        $job_role = isset($_POST['job_role']) ? $_POST['job_role'] : array();
 
 
 

@@ -200,17 +200,30 @@ if ($company_term_id) {
 
                             <div class="flex flex-col items-start gap-2 lg:flex-row lg:gap-5 lg:items-center">
                                 <label class="text-base min-w-[130px]" for="job_role">Job Role</label>
-                                <select class="select-custom w-full lg:w-3/4 bg-lightergreen rounded px-5 py-3" id="job_role" name="job_role" required>
-                                    <option value="Administrative, Finance & HR" <?php selected($job_role, 'Administrative, Finance & HR'); ?>>Administrative, Finance & HR</option>
-                                    <option value="Creative and Design" <?php selected($job_role, 'Creative and Design'); ?>>Creative and Design</option>
-                                    <option value="Customer Service and Support" <?php selected($job_role, 'Customer Service and Support'); ?>>Customer Service and Support</option>
-                                    <option value="Education and Training" <?php selected($job_role, 'Education and Training'); ?>>Education and Training</option>
-                                    <option value="Healthcare and Medical" <?php selected($job_role, 'Healthcare and Medical'); ?>>Healthcare and Medical</option>
-                                    <option value="Management and Leadership" <?php selected($job_role, 'Management and Leadership'); ?>>Management and Leadership</option>
-                                    <option value="Sales and Marketing" <?php selected($job_role, 'Sales and Marketing'); ?>>Sales and Marketing</option>
-                                    <option value="Skilled Trades and Labour" <?php selected($job_role, 'Skilled Trades and Labour'); ?>>Skilled Trades and Labour</option>
-                                    <option value="Technical and Operations" <?php selected($job_role, 'Technical and Operations'); ?>>Technical and Operations</option>
-                                    <option value="Other" <?php selected($job_role, 'Other'); ?>>Other</option>
+                                <select class="select-custom w-full lg:w-3/4 bg-lightergreen rounded px-5 py-3 select-two" multiple="multiple" id="job_role" name="job_role[]" required>
+                                    <?php
+                                    // Ensure $job_post->job_role is an array
+                                    $roles = isset($job_post->job_role) && is_array($job_post->job_role) ? $job_post->job_role : []; 
+                                    // Define all possible job roles
+                                    $job_roles = [
+                                        "Administrative, Finance & HR",
+                                        "Creative and Design",
+                                        "Customer Service and Support",
+                                        "Education and Training",
+                                        "Healthcare and Medical",
+                                        "Management and Leadership",
+                                        "Sales and Marketing",
+                                        "Skilled Trades and Labour",
+                                        "Technical and Operations",
+                                        "Other"
+                                    ];
+
+                                    // Loop through each role and check if it is selected
+                                    foreach ($job_roles as $role) {
+                                        $selected = in_array($role, $roles) ? 'selected' : '';
+                                        echo "<option value=\"$role\" $selected>$role</option>";
+                                    }
+                                    ?>
                                 </select>
                             </div>
 

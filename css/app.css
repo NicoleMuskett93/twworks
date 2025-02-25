@@ -776,6 +776,10 @@ video {
   min-height: 100vh;
 }
 
+.\!w-full {
+  width: 100% !important;
+}
+
 .w-1\/2 {
   width: 50%;
 }
@@ -2095,6 +2099,23 @@ ul {
   /* Add space for the arrow */
 }
 
+.select2 {
+  width: 100% !important;
+  border-radius: 0.25rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(247 255 249 / var(--tw-bg-opacity));
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+@media (min-width: 960px) {
+  .select2 {
+    width: 75% !important;
+  }
+}
+
 .volunteering-page .select-custom {
   background-image: url("https://staging2.tunbridgewells.works/wp-content/uploads/2025/02/volunteer-purple-arrow.svg");
   /* Custom arrow */
@@ -2673,6 +2694,10 @@ ul {
 
   .lg\:h-\[220px\] {
     height: 220px;
+  }
+
+  .lg\:\!w-3\/4 {
+    width: 75% !important;
   }
 
   .lg\:w-1\/3 {

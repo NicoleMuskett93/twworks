@@ -517,6 +517,10 @@ ul {
   padding-right: 30px; /* Add space for the arrow */
 }
 
+.select2 {
+  @apply !w-full lg:!w-3/4 rounded px-5 py-3 bg-lightergreen;
+}
+
 .volunteering-page .select-custom {
 
   background-image: url("https://staging2.tunbridgewells.works/wp-content/uploads/2025/02/volunteer-purple-arrow.svg"); /* Custom arrow */

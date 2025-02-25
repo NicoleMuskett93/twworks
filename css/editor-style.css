@@ -230,6 +230,10 @@
   min-height:100vh;
 }
 
+.\!w-full {
+  width:100% !important;
+}
+
 .w-1\/2 {
   width:50%;
 }
@@ -1333,6 +1337,10 @@ body {
 
   .lg\:h-\[220px\] {
     height:220px;
+  }
+
+  .lg\:\!w-3\/4 {
+    width:75% !important;
   }
 
   .lg\:w-1\/3 {

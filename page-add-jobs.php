@@ -154,7 +154,7 @@ if ($company_term_id) {
 
                         <div class="flex flex-col items-start gap-2 lg:flex-row lg:gap-5 lg:items-center">
                             <label class="text-base min-w-[130px]" for="job_role">Job Role</label>
-                            <select class="select-custom w-full lg:w-3/4 rounded px-5 py-3 bg-lightergreen" id="job_role" name="job_role" required>
+                            <select class="select-custom w-full lg:w-3/4 rounded px-5 py-3 bg-lightergreen select-two" multiple="multiple" id="job_role" name="job_role[]" required>
                                 <option value="Administrative, Finance & HR">Administrative, Finance & HR</option>
                                 <option value="Creative and Design">Creative and Design</option>
                                 <option value="Customer Service and Support">Customer Service and Support</option>

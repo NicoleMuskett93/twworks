@@ -126,7 +126,14 @@ $time_diff = human_time_diff($publish_timestamp);
 
 
                         <p class="text-base text-black flex flex-row gap-1"><strong class="min-w-[180px]">Sector:</strong> <?php echo $job_sector = get_post_meta(get_the_ID(), 'job_sector', true); ?></p>
-                        <p class="text-base text-black flex flex-row gap-1"><strong class="min-w-[180px]">Job Role:</strong> <?php echo $job_role = get_post_meta(get_the_ID(), 'job_role', true); ?></p>
+                        <p class="text-base text-black flex flex-row gap-1"><strong class="min-w-[180px]">Job Role:</strong>
+                         <?php $job_role = get_post_meta(get_the_ID(), 'job_role', true); 
+                         if (is_array($job_role)) {
+                                // Convert the array to a comma-separated string
+                                echo implode(', ', $job_role);
+                            } ?>
+                    
+                    </p>
                         <p class="text-base text-black flex flex-row gap-1"><strong class="min-w-[180px]">Workplace:</strong> <?php echo $job_location = get_post_meta(get_the_ID(), 'job_location', true); ?></p>
                         <?php $job_start_date = get_post_meta(get_the_ID(), 'job_start_date', true);
                         if ($job_start_date) {
