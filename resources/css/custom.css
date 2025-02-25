@@ -749,6 +749,10 @@ ul {
     background: linear-gradient(90deg, #37a048 73.79%, #2a7736 93.4%);
   }
 
+  .volunteering-page .strip {
+    background: linear-gradient(90deg, #7837a0 73.79%, #562674 93.4%);
+  }
+
   .custom-login {
     margin: 20px;
     padding: 0;

@@ -45,7 +45,7 @@ $vol_description_hidden = get_field('vol_description_hidden', 'option');
     </div>
 
     <div class="strip block md:hidden px-5 py-4">
-        <p class="text-white text-2xl text-center font-bold">Find a Job in Tunbridge Wells</p>
+        <p class="text-white text-2xl text-center font-bold">Find a Volunteering position in Tunbridge Wells</p>
     </div>
     <div class="flex justify-center md:justify-end p-5 md:px-8 w-full">
         <div id="adblock" class="flex flex-col md:flex-row md:flex-wrap md:justify-evenly gap-3 md:gap-0 border border-darkergreen p-4 relative lg:w-2/3 w-full ">
@@ -64,8 +64,8 @@ $vol_description_hidden = get_field('vol_description_hidden', 'option');
                 <img src="https://tunbridgewells.works/wp-content/uploads/2024/11/709ef9c02c49236fbd7835c1d26acd9f-e1730461422645.png" alt="Logo" class="w-[100px] h-[50px] object-contain">
             </div>
             <div class="flex flex-row gap-1 md:gap-3 items-center">
-                <p class="text-base text-darkgrey w-[185px] md:w-auto">and in partnership with</p>
-                <img src="https://tunbridgewells.works/wp-content/uploads/2024/11/454867addeceefad6794a1dfbac3e1f4.png" alt="Logo" class="w-[100px] h-[50px] object-contain">
+                <p class="text-base text-darkgrey w-[185px] md:w-auto">and support from</p>
+                <img src="https://tunbridgewells.works/wp-content/uploads/2025/02/Creative_Tunbridge_Wells.png" alt="Logo" class="w-[100px] h-[50px] object-contain">
             </div>
 
 
